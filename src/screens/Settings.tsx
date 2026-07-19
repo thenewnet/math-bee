@@ -5,7 +5,7 @@ import { THEME_AVATARS } from '../engine/themes'
 import { useStore } from '../store/store'
 
 const BAND_ORDER: AgeBand[] = ['be', 'nho', 'lon', 'tien-th']
-const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster']
+const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster', 'car']
 
 export function Settings({
   onBack,

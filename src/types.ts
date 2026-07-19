@@ -11,7 +11,7 @@ export const AGE_BANDS: Record<AgeBand, { label: string; range: string; order: n
 }
 
 // Chủ đề yêu thích của bé — đổi hình minh hoạ khi đếm/cộng/trừ và avatar.
-export type InterestTheme = 'classic' | 'robot' | 'hero' | 'monster'
+export type InterestTheme = 'classic' | 'robot' | 'hero' | 'monster' | 'car'
 
 export const INTEREST_THEMES: Record<
   InterestTheme,
@@ -21,6 +21,7 @@ export const INTEREST_THEMES: Record<
   robot: { label: 'Robot', emoji: '🤖', desc: 'Robot, phi thuyền, máy móc' },
   hero: { label: 'Siêu nhân', emoji: '🦸', desc: 'Siêu anh hùng, sức mạnh' },
   monster: { label: 'Thú cưng quái vật', emoji: '👾', desc: 'Quái vật, rồng, sinh vật' },
+  car: { label: 'Xe cộ', emoji: '🚗', desc: 'Ô tô, xe tải, xe buýt, xe đua' },
 }
 
 export type ActivityType =

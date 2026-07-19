@@ -14,12 +14,14 @@ export function ObjectGroup({
   faded?: number // số phần tử cuối bị mờ (dùng cho tách/trừ phần "lấy đi")
   crossed?: number // số phần tử cuối bị gạch (dùng cho phép trừ)
 }) {
-  const px = size === 'lg' ? 46 : size === 'sm' ? 30 : 38
+  // Ở khung câu hỏi (lg): ít đồ vật thì vẽ TO để nổi bật, nhiều thì nhỏ lại vừa khung.
+  const lgPx = count <= 2 ? 116 : count <= 4 ? 96 : count <= 6 ? 78 : count <= 10 ? 64 : 54
+  const px = size === 'lg' ? lgPx : size === 'sm' ? 44 : 56
   const cols = count <= 3 ? count : count <= 6 ? 3 : count <= 8 ? 4 : 5
   const items = Array.from({ length: count })
   return (
     <div
-      className="grid justify-center gap-1.5 sm:gap-2"
+      className="grid justify-center gap-2 sm:gap-3"
       style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
     >
       {items.map((_, i) => {

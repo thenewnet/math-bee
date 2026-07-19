@@ -7,7 +7,7 @@ import { Mascot } from '../components/Mascot'
 import { speak, unlockAudio } from '../audio/sound'
 
 const BAND_ORDER: AgeBand[] = ['be', 'nho', 'lon', 'tien-th']
-const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster']
+const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster', 'car']
 
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const { addProfile } = useStore()

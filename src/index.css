@@ -63,3 +63,23 @@ button {
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 .text-shadow-kid { text-shadow: 0 2px 0 rgba(0, 0, 0, 0.12); }
+
+/* Hiệu ứng chạm cho nút lựa chọn */
+@keyframes tap-burst {
+  0% { transform: translate(0, 0) scale(0.3); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(1.1); opacity: 0; }
+}
+.tap-particle { animation: tap-burst 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+@keyframes press-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.anim-press { animation: press-pop 0.35s ease-out; }
+
+@keyframes ring-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 179, 0, 0.5); }
+  100% { box-shadow: 0 0 0 18px rgba(255, 179, 0, 0); }
+}
+.anim-ring { animation: ring-pulse 0.5s ease-out; }
