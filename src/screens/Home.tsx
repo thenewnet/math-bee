@@ -93,17 +93,54 @@ export function Home({
         </div>
       </div>
 
-      {/* curriculum path */}
+      {/* curriculum path — sắp theo: Cần học tiếp -> Đã hoàn thành -> Chặng tiếp theo */}
       <div className="flex flex-col gap-5 px-4">
-        {CURRICULUM.map((unit) => (
-          <UnitCard
-            key={unit.id}
-            unit={unit}
-            unlocked={unlocked}
-            starsFor={starsFor}
-            onOpenLesson={onOpenLesson}
-          />
-        ))}
+        {(() => {
+          const isDone = (u: Unit) => u.lessons.every((l) => starsFor(l.id) > 0)
+          const isUnlocked = (u: Unit) => u.lessons.some((l) => unlocked.has(l.id))
+          const current = CURRICULUM.filter((u) => isUnlocked(u) && !isDone(u))
+          const done = CURRICULUM.filter((u) => isDone(u))
+          const locked = CURRICULUM.filter((u) => !isUnlocked(u))
+
+          const section = (
+            label: string,
+            emoji: string,
+            units: Unit[],
+            defaultOpen: boolean,
+          ) =>
+            units.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <div className="mt-1 flex items-center gap-2 px-1">
+                  <span className="text-lg">{emoji}</span>
+                  <h3 className="text-sm font-extrabold uppercase tracking-wide text-ink/50">
+                    {label}
+                  </h3>
+                  <span className="rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-extrabold text-ink/50">
+                    {units.length}
+                  </span>
+                  <div className="h-0.5 flex-1 rounded-full bg-ink/10" />
+                </div>
+                {units.map((unit) => (
+                  <UnitCard
+                    key={unit.id}
+                    unit={unit}
+                    unlocked={unlocked}
+                    starsFor={starsFor}
+                    onOpenLesson={onOpenLesson}
+                    defaultOpen={defaultOpen}
+                  />
+                ))}
+              </div>
+            )
+
+          return (
+            <>
+              {section('Cần học tiếp', '🎯', current, true)}
+              {section('Đã hoàn thành', '✅', done, false)}
+              {section('Chặng tiếp theo', '🔒', locked, false)}
+            </>
+          )
+        })()}
       </div>
       <p className="mt-6 px-6 text-center text-xs font-semibold text-ink/40">
         Giáo trình bám khung "Làm quen với Toán" — Chương trình GD Mầm non
@@ -117,11 +154,13 @@ function UnitCard({
   unlocked,
   starsFor,
   onOpenLesson,
+  defaultOpen = true,
 }: {
   unit: Unit
   unlocked: Set<string>
   starsFor: (id: string) => number
   onOpenLesson: (l: Lesson) => void
+  defaultOpen?: boolean
 }) {
   const c = COLOR[unit.color] ?? COLOR.honey
   const unitDone = unit.lessons.filter((l) => starsFor(l.id) > 0).length
@@ -129,8 +168,8 @@ function UnitCard({
   const unitUnlocked = unit.lessons.some((l) => unlocked.has(l.id))
   const fullyDone = unitDone === unit.lessons.length
 
-  // Chặng đã hoàn thành 100% => tự thu gọn (bé khỏi lỡ học lại). Chạm để mở lại.
-  const [open, setOpen] = useState(!fullyDone)
+  // Nhóm "Cần học tiếp" mở sẵn; "Đã hoàn thành" và "Chặng tiếp theo" thu gọn.
+  const [open, setOpen] = useState(defaultOpen)
 
   return (
     <section className={`overflow-hidden rounded-3xl ${c.soft} shadow-md`}>
