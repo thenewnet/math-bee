@@ -40,6 +40,11 @@ trên điện thoại / máy tính bảng (PWA).
 - **Tailwind CSS v4** cho giao diện
 - **vite-plugin-pwa** để cài đặt như ứng dụng gốc
 - **Web Speech API** (giọng đọc) và **Web Audio API** (hiệu ứng âm thanh) — thuần trình duyệt, không phụ thuộc dịch vụ ngoài
+- **Twemoji** (ảnh emoji SVG, giấy phép CC-BY 4.0) cho hình minh hoạ đồng nhất, đẹp trên mọi thiết bị — nhúng offline trong `public/emoji/` (xem `scripts/gen-emoji.mjs`)
+
+## 🖼️ Bản quyền hình ảnh
+
+Ứng dụng chỉ dùng hình **miễn phí bản quyền**: emoji **Twemoji** (© Twitter, CC-BY 4.0) và các hình vẽ/nhân vật **gốc** do dự án tự thiết kế. Không sử dụng nhân vật thương hiệu (Pokémon, Marvel/DC…).
 
 ## 🚀 Chạy dự án
 

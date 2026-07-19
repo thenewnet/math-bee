@@ -1,5 +1,6 @@
 // Nhân vật GỐC do Math Bee tự thiết kế (SVG) — quái vật, robot, siêu nhân.
 // KHÔNG sao chép nhân vật có bản quyền. Bản quyền thuộc về ứng dụng.
+import { Emoji } from './Emoji'
 
 function Eyes({ y = 52 }: { y?: number }) {
   return (
@@ -262,12 +263,9 @@ export function isCharToken(token: string): boolean {
   return FAMILIES.some((f) => token.startsWith(f))
 }
 
-// Hiển thị một "glyph": nhân vật SVG nếu là token, còn lại là emoji.
+// Hiển thị một "glyph": nhân vật SVG gốc (nếu là token đặc biệt), còn lại là
+// ẢNH emoji Twemoji (đồng nhất, đẹp trên mọi thiết bị).
 export function Glyph({ token, size = 40 }: { token: string; size?: number }) {
   if (isCharToken(token)) return <Character token={token} size={size} />
-  return (
-    <span className="inline-block leading-none" style={{ fontSize: size * 0.86 }}>
-      {token}
-    </span>
-  )
+  return <Emoji char={token} size={size} />
 }
