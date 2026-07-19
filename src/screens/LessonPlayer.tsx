@@ -133,16 +133,36 @@ export function LessonPlayer({
       playWrong()
       const r = RETRY[Math.floor(Math.random() * RETRY.length)]
       setFeedback(r)
-      // đoán liên tục 3 lần sai => tạm khoá 3 giây, nhắc bé suy nghĩ
+      // đoán liên tục 3 lần sai => tạm khoá, đọc lời nhắc (bé chưa biết đọc).
+      // Mở lại khi ĐÃ đủ 3 giây VÀ đã đọc xong câu (nếu câu dài hơn thì chờ hết).
       if (wrongStreak.current >= 3) {
         setLocked(true)
-        const warn = 'Bình tĩnh suy nghĩ nhé! Đừng đoán, hãy đếm thật kỹ rồi chọn.'
         setFeedback(null)
-        speak(warn)
+        const warn =
+          'Bé ơi, hãy bình tĩnh suy nghĩ nhé! Đừng chọn bừa. Con hãy nhìn và đếm thật kỹ, rồi chọn đáp án đúng.'
+        let timeDone = false
+        let speechDone = false
+        const tryUnlock = () => {
+          if (timeDone && speechDone) {
+            setLocked(false)
+            wrongStreak.current = 0
+          }
+        }
+        speak(warn, () => {
+          speechDone = true
+          tryUnlock()
+        })
         lockTimer.current = window.setTimeout(() => {
-          setLocked(false)
-          wrongStreak.current = 0
+          timeDone = true
+          tryUnlock()
         }, 3000)
+        // chốt an toàn: dù có trục trặc giọng đọc cũng mở lại sau tối đa 12 giây
+        window.setTimeout(() => {
+          if (!timeDone || !speechDone) {
+            setLocked(false)
+            wrongStreak.current = 0
+          }
+        }, 12000)
       } else {
         speak(said ? `${said}. ${r}` : r)
       }
@@ -190,8 +210,8 @@ export function LessonPlayer({
             <span className="text-6xl anim-bounce">🤔</span>
             <h3 className="text-xl font-extrabold text-coral">Bình tĩnh suy nghĩ nhé!</h3>
             <p className="text-sm font-bold text-ink/70">Đừng đoán — hãy đếm/nhìn thật kỹ rồi chọn.</p>
-            <div className="mt-1 h-2.5 w-full overflow-hidden rounded-full bg-black/10">
-              <div className="anim-countdown h-full rounded-full bg-honey" />
+            <div className="relative mt-1 h-2.5 w-full overflow-hidden rounded-full bg-black/10">
+              <div className="anim-indeterminate rounded-full bg-honey" />
             </div>
           </div>
         </div>

@@ -84,6 +84,6 @@ button {
 }
 .anim-ring { animation: ring-pulse 0.5s ease-out; }
 
-/* Khoá màn hình 3s khi bé đoán liên tục */
-@keyframes countdown-bar { from { width: 100%; } to { width: 0%; } }
-.anim-countdown { animation: countdown-bar 3s linear forwards; }
+/* Khoá màn hình khi bé đoán liên tục — thanh nhắc chạy liên tục */
+@keyframes indeterminate { 0% { left: -45%; } 100% { left: 100%; } }
+.anim-indeterminate { position: absolute; top: 0; width: 45%; height: 100%; animation: indeterminate 1.1s ease-in-out infinite; }

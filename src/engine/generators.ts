@@ -359,7 +359,8 @@ function genSortSize(l: Lesson): Question[] {
     variant === 'big' ? 'NHỎ nhất' : variant === 'long' ? 'NGẮN nhất' : 'THẤP nhất'
   for (let i = 0; i < questions; i++) {
     const icon = icons[i % icons.length]
-    const scales = shuffle([0.55, 0.8, 1.15])
+    // chênh lệch rõ ràng để bé dễ nhận biết to nhất / nhỏ nhất
+    const scales = shuffle([0.42, 0.72, 1.2])
     const items = scales.map((s) => ({ icon, scale: s }))
     const wantBig = i % 2 === 0
     const targetScale = wantBig ? Math.max(...scales) : Math.min(...scales)

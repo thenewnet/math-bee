@@ -92,8 +92,11 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
   window.speechSynthesis.onvoiceschanged = pickVoice
 }
 
-export function speak(text: string) {
-  if (!voiceOn || typeof window === 'undefined' || !window.speechSynthesis) return
+export function speak(text: string, onEnd?: () => void) {
+  if (!voiceOn || typeof window === 'undefined' || !window.speechSynthesis) {
+    onEnd?.() // không đọc được thì coi như "đọc xong" ngay
+    return
+  }
   try {
     window.speechSynthesis.cancel()
     const u = new SpeechSynthesisUtterance(text)
@@ -101,9 +104,13 @@ export function speak(text: string) {
     if (viVoice) u.voice = viVoice
     u.rate = 0.92
     u.pitch = 1.12
+    if (onEnd) {
+      u.onend = () => onEnd()
+      u.onerror = () => onEnd()
+    }
     window.speechSynthesis.speak(u)
   } catch {
-    /* ignore */
+    onEnd?.()
   }
 }
 

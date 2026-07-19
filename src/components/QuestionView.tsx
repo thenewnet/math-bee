@@ -146,9 +146,9 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
     case 'sizeRow':
       return (
         <Panel>
-          <div className="flex items-end justify-center gap-6">
+          <div className="flex items-end justify-center gap-5 sm:gap-8">
             {r.items.map((it, i) => (
-              <Emoji key={i} char={it.icon} size={Math.round((it.scale * 3.5 + 1) * 18)} />
+              <Emoji key={i} char={it.icon} size={Math.round(it.scale * 92 + 22)} />
             ))}
           </div>
         </Panel>

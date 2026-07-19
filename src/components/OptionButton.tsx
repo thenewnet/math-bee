@@ -38,7 +38,8 @@ export function OptionButton({
           ? 'border-black/5 opacity-45'
           : 'border-honey/40 hover:border-honey'
 
-  const emojiPx = option.scale ? Math.round((2.4 * option.scale + 1.6) * 18) : 62
+  // Với bài so sánh kích thước: phóng emoji theo tỉ lệ để thấy rõ to/nhỏ
+  const emojiPx = option.scale ? Math.round(option.scale * 66 + 26) : 62
 
   return (
     <button
