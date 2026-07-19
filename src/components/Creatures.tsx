@@ -165,17 +165,99 @@ function Hero({ id }: { id: string }) {
   )
 }
 
+// ---------- Xe cộ (nhân vật gốc, có mặt cười) ----------
+function Wheels() {
+  return (
+    <>
+      <circle cx="30" cy="78" r="10" fill="#37474f" /><circle cx="30" cy="78" r="4" fill="#b0bec5" />
+      <circle cx="70" cy="78" r="10" fill="#37474f" /><circle cx="70" cy="78" r="4" fill="#b0bec5" />
+    </>
+  )
+}
+function CarFace({ x, y, w, h }: { x: number; y: number; w: number; h: number }) {
+  const cx = x + w / 2
+  return (
+    <>
+      <rect x={x} y={y} width={w} height={h} rx="4" fill="#b3e5fc" stroke="#4fc3f7" strokeWidth="1.5" />
+      <circle cx={cx - 7} cy={y + h / 2} r="3.2" fill="#241c2b" />
+      <circle cx={cx + 7} cy={y + h / 2} r="3.2" fill="#241c2b" />
+      <path d={`M${cx - 6} ${y + h / 2 + 4} Q${cx} ${y + h / 2 + 8} ${cx + 6} ${y + h / 2 + 4}`} stroke="#241c2b" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+    </>
+  )
+}
+function Car({ id }: { id: string }) {
+  switch (id) {
+    case 'truck':
+      return (
+        <g>
+          <rect x="10" y="48" width="42" height="28" rx="5" fill="#42a5f5" stroke="#1976d2" strokeWidth="2" />
+          <path d="M52 54 h22 l10 12 v10 h-32 Z" fill="#64b5f6" stroke="#1976d2" strokeWidth="2" />
+          <CarFace x={58} y={56} w={18} h={13} />
+          <circle cx="80" cy="60" r="2.5" fill="#fff59d" />
+          <Wheels />
+        </g>
+      )
+    case 'bus':
+      return (
+        <g>
+          <rect x="8" y="40" width="84" height="38" rx="10" fill="#ffca28" stroke="#f9a825" strokeWidth="2" />
+          <rect x="14" y="46" width="14" height="12" rx="2" fill="#b3e5fc" />
+          <rect x="60" y="46" width="14" height="12" rx="2" fill="#b3e5fc" />
+          <CarFace x={33} y={46} w={22} h={13} />
+          <Wheels />
+        </g>
+      )
+    case 'race':
+      return (
+        <g>
+          <path d="M8 68 Q20 58 44 56 L58 46 Q66 42 74 50 L88 56 Q94 60 92 68 Z" fill="#66bb6a" stroke="#2e7d32" strokeWidth="2" />
+          <rect x="80" y="42" width="4" height="16" fill="#2e7d32" /><rect x="74" y="42" width="14" height="4" fill="#2e7d32" />
+          <CarFace x={46} y={50} w={20} h={12} />
+          <text x="28" y="70" fontSize="12" fontWeight="800" fill="#fff">1</text>
+          <Wheels />
+        </g>
+      )
+    case 'van':
+      return (
+        <g>
+          <rect x="12" y="40" width="76" height="38" rx="10" fill="#ff8a65" stroke="#e64a19" strokeWidth="2" />
+          <CarFace x={40} y={46} w={30} h={16} />
+          <circle cx="82" cy="58" r="2.6" fill="#fff59d" />
+          <Wheels />
+        </g>
+      )
+    default: // sedan
+      return (
+        <g>
+          <rect x="10" y="52" width="80" height="22" rx="11" fill="#ef5350" stroke="#c62828" strokeWidth="2" />
+          <path d="M28 54 Q30 36 50 36 L60 36 Q74 36 78 54 Z" fill="#e57373" stroke="#c62828" strokeWidth="2" />
+          <CarFace x={34} y={40} w={32} h={14} />
+          <circle cx="86" cy="60" r="3" fill="#fff59d" /><circle cx="14" cy="60" r="3" fill="#ffab91" />
+          <Wheels />
+        </g>
+      )
+  }
+}
+
 // ---------- Bộ hiển thị chung ----------
 export function Character({ token, size = 44 }: { token: string; size?: number }) {
   const [family, id] = token.split(':')
   return (
     <svg width={size} height={size} viewBox="0 0 100 100" className="inline-block align-middle">
-      {family === 'robot' ? <Robot id={id} /> : family === 'hero' ? <Hero id={id} /> : <Monster id={id} />}
+      {family === 'robot' ? (
+        <Robot id={id} />
+      ) : family === 'hero' ? (
+        <Hero id={id} />
+      ) : family === 'car' ? (
+        <Car id={id} />
+      ) : (
+        <Monster id={id} />
+      )}
     </svg>
   )
 }
 
-const FAMILIES = ['creature:', 'robot:', 'hero:']
+const FAMILIES = ['creature:', 'robot:', 'hero:', 'car:']
 export function isCharToken(token: string): boolean {
   return FAMILIES.some((f) => token.startsWith(f))
 }

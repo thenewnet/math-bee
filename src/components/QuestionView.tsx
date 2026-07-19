@@ -14,7 +14,7 @@ const SHAPE_ASK: Record<string, string> = {
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-[150px] w-full items-center justify-center rounded-3xl bg-white/70 p-4 shadow-inner">
+    <div className="flex min-h-[200px] w-full items-center justify-center rounded-3xl bg-white/70 p-4 shadow-inner sm:min-h-[300px]">
       {children}
     </div>
   )
@@ -170,7 +170,7 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
     case 'solid':
       return (
         <Panel>
-          <Solid3D kind={r.solidId} size={150} />
+          <Solid3D kind={r.solidId} size={200} />
         </Panel>
       )
 

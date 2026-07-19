@@ -25,6 +25,7 @@ export const INTEREST_ICONS: Record<Exclude<InterestTheme, 'classic'>, string[]>
     'creature:star',
     'creature:bot',
   ],
+  car: ['car:sedan', 'car:truck', 'car:bus', 'car:race', 'car:van'],
 }
 
 // Avatar gợi ý theo chủ đề (đứng đầu danh sách khi bé chọn chủ đề đó).
@@ -33,6 +34,7 @@ export const THEME_AVATARS: Record<InterestTheme, string[]> = {
   robot: ['🤖', '👾', '🦾', '🛸', '🚀', '🛰️', '⚙️', '🔋', '📡', '💡', '🎮', '🦿'],
   hero: ['🦸', '🦸‍♂️', '🦸‍♀️', '🦹', '🦇', '⚡', '🛡️', '🔥', '💥', '⭐', '🏆', '🌟'],
   monster: ['👾', '🐲', '🐉', '🦖', '🦕', '👹', '👻', '🦄', '🦎', '🐙', '🐊', '🦂'],
+  car: ['🚗', '🚙', '🚕', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚚', '🚌', '🛻', '🚜'],
 }
 
 export function themeIcons(name?: string): string[] {

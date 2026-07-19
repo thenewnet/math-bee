@@ -143,7 +143,7 @@ export function LessonPlayer({
   if (!q) return null
 
   return (
-    <div className="flex min-h-full flex-col p-4">
+    <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col p-4 sm:p-6">
       <Confetti trigger={confetti} />
       {/* header */}
       <div className="mb-3 flex items-center gap-3">
@@ -168,7 +168,7 @@ export function LessonPlayer({
       {/* prompt */}
       <button
         onClick={() => speak(q.prompt)}
-        className="mb-3 flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-center text-lg font-extrabold text-ink shadow"
+        className="mb-4 flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-4 text-center text-xl font-extrabold text-ink shadow sm:text-2xl"
       >
         <span>{q.prompt}</span>
         <span className="text-xl">🔊</span>
@@ -213,9 +213,8 @@ export function LessonPlayer({
           </div>
 
           {/* options */}
-          <div
-            className={`grid gap-3 ${q.options.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'}`}
-          >
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+
             {q.options.map((opt) => {
               const isAnswer = opt.id === q.answer
               const state = solved
