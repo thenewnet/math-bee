@@ -6,6 +6,7 @@ import { OptionButton } from '../components/OptionButton'
 import { Stars } from '../components/Stars'
 import { Mascot } from '../components/Mascot'
 import { Confetti } from '../components/Confetti'
+import { useStore } from '../store/store'
 import { playCelebrate, playCorrect, playStar, playTap, playWrong, speak, unlockAudio } from '../audio/sound'
 
 const PRAISE = ['Giỏi quá!', 'Chính xác!', 'Tuyệt vời!', 'Đúng rồi!', 'Xuất sắc!', 'Bé thông minh ghê!']
@@ -28,7 +29,12 @@ export function LessonPlayer({
   onExit: () => void
   onDone: (stars: number, correct: number, total: number) => void
 }) {
-  const questions = useMemo<Question[]>(() => generateQuestions(lesson), [lesson])
+  const { active } = useStore()
+  const interest = active?.theme
+  const questions = useMemo<Question[]>(
+    () => generateQuestions(lesson, interest),
+    [lesson, interest],
+  )
   const [idx, setIdx] = useState(0)
   const [wrongIds, setWrongIds] = useState<Set<string>>(new Set())
   const [solved, setSolved] = useState(false)

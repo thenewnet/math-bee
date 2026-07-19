@@ -10,6 +10,19 @@ export const AGE_BANDS: Record<AgeBand, { label: string; range: string; order: n
   'tien-th': { label: 'Tiền tiểu học', range: '5 - 6 tuổi', order: 4 },
 }
 
+// Chủ đề yêu thích của bé — đổi hình minh hoạ khi đếm/cộng/trừ và avatar.
+export type InterestTheme = 'classic' | 'robot' | 'hero' | 'monster'
+
+export const INTEREST_THEMES: Record<
+  InterestTheme,
+  { label: string; emoji: string; desc: string }
+> = {
+  classic: { label: 'Vui nhộn', emoji: '🐝', desc: 'Hoa quả, con vật, đồ chơi' },
+  robot: { label: 'Robot', emoji: '🤖', desc: 'Robot, phi thuyền, máy móc' },
+  hero: { label: 'Siêu nhân', emoji: '🦸', desc: 'Siêu anh hùng, sức mạnh' },
+  monster: { label: 'Thú cưng quái vật', emoji: '👾', desc: 'Quái vật, rồng, sinh vật' },
+}
+
 export type ActivityType =
   | 'count' // đếm số lượng đồ vật
   | 'recognizeDigit' // nhận biết chữ số (chọn số đúng)
@@ -63,6 +76,7 @@ export interface ChildProfile {
   name: string
   avatar: string // emoji
   ageBand: AgeBand
+  theme?: InterestTheme // chủ đề yêu thích (mặc định 'classic')
   createdAt: number
 }
 
