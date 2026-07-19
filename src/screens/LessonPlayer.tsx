@@ -26,7 +26,7 @@ export function LessonPlayer({
 }: {
   lesson: Lesson
   onExit: () => void
-  onDone: (stars: number) => void
+  onDone: (stars: number, correct: number, total: number) => void
 }) {
   const questions = useMemo<Question[]>(() => generateQuestions(lesson), [lesson])
   const [idx, setIdx] = useState(0)
@@ -71,7 +71,7 @@ export function LessonPlayer({
     playCelebrate()
     const msg = stars === 3 ? 'Hoàn hảo! Bé được 3 sao!' : stars === 2 ? 'Làm tốt lắm!' : 'Hoàn thành rồi!'
     window.setTimeout(() => speak(msg), 300)
-    onDone(stars)
+    onDone(stars, perfectRef.current, total)
   }
 
   function choose(optionId: string) {

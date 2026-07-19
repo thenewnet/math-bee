@@ -159,7 +159,34 @@ export const CURRICULUM: Unit[] = [
       { id: 'u10l3', title: 'Trừ với chữ số', emoji: '🧮', activity: 'subtract', skill: 'Đọc phép trừ bằng ký hiệu', config: { max: 10, questions: 8, theme: 'toy', variant: 'symbol' } },
     ],
   },
+  {
+    id: 'u11',
+    order: 11,
+    title: 'Khối 3 chiều',
+    subtitle: 'Khối cầu, khối trụ, khối lập phương, khối chữ nhật',
+    emoji: '📦',
+    color: 'sky',
+    ageBand: 'tien-th',
+    goal: 'Nhận biết, gọi tên các khối và liên hệ với đồ vật quen thuộc.',
+    lessons: [
+      { id: 'u11l1', title: 'Khối cầu & lập phương', emoji: '⚽', activity: 'solid', skill: 'Nhận biết khối cầu, khối lập phương', config: { questions: 6, variant: 'basic2' } },
+      { id: 'u11l2', title: 'Khối trụ & chữ nhật', emoji: '🥫', activity: 'solid', skill: 'Nhận biết khối trụ, khối chữ nhật', config: { questions: 6, variant: 'basic4' } },
+      { id: 'u11l3', title: 'Đồ vật quanh bé', emoji: '🔍', activity: 'solid', skill: 'Liên hệ khối với đồ vật thật', config: { questions: 8, variant: 'all' } },
+    ],
+  },
 ]
+
+// Thêm bài "Ôn tập cuối chặng" vào cuối mỗi chặng (tổng hợp các dạng bài đã học).
+for (const u of CURRICULUM) {
+  u.lessons.push({
+    id: `${u.id}lR`,
+    title: 'Ôn tập chặng',
+    emoji: '🎓',
+    activity: 'review',
+    skill: `Ôn tập tổng hợp: ${u.title}`,
+    config: { questions: 8 },
+  })
+}
 
 export const ALL_LESSONS = CURRICULUM.flatMap((u) =>
   u.lessons.map((l) => ({ ...l, unitId: u.id })),

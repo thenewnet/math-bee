@@ -26,6 +26,8 @@ export type ActivityType =
   | 'sortSize' // so sánh kích thước (to/nhỏ, dài/ngắn, cao/thấp)
   | 'spatial' // định hướng không gian
   | 'sequence' // đếm tiếp / số còn thiếu trong dãy
+  | 'solid' // nhận biết khối 3 chiều (cầu, trụ, lập phương, chữ nhật)
+  | 'review' // ôn tập cuối chặng (tổng hợp các dạng bài trong chặng)
 
 export interface LessonConfig {
   min?: number
@@ -67,6 +69,16 @@ export interface ChildProfile {
 // map lessonId -> số sao đạt cao nhất (0..3); có mặt = đã hoàn thành
 export type ProgressMap = Record<string, number>
 
+// Thống kê học tập cho mỗi bài (phục vụ báo cáo phụ huynh)
+export interface LessonStat {
+  stars: number // số sao cao nhất đạt được (0..3)
+  plays: number // số lần chơi
+  correct: number // tổng số câu đúng ngay lần đầu (cộng dồn)
+  total: number // tổng số câu đã làm (cộng dồn)
+  lastPlayed: number // timestamp lần chơi gần nhất
+}
+export type StatsMap = Record<string, LessonStat>
+
 export interface Question {
   id: string
   prompt: string // câu hỏi hiển thị + đọc to
@@ -87,6 +99,7 @@ export type QuestionRender =
   | { kind: 'sizeRow'; items: { icon: string; scale: number }[]; ask: string }
   | { kind: 'spatial'; scene: string; ask: string }
   | { kind: 'shape'; target: string }
+  | { kind: 'solid'; emoji: string; name: string }
   | { kind: 'digit'; value: number }
   | { kind: 'sequence'; sequence: (number | null)[] }
 

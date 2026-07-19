@@ -152,6 +152,13 @@ export function QuestionView({ q }: { q: Question }) {
         </Panel>
       )
 
+    case 'solid':
+      return (
+        <Panel>
+          <span className="text-8xl anim-pop leading-none">{r.emoji}</span>
+        </Panel>
+      )
+
     case 'digit':
       return (
         <Panel>

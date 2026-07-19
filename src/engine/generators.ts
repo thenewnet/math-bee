@@ -1,5 +1,6 @@
 import type { Lesson, Option, Question } from '../types'
 import { pickIcon, themeIcons } from './themes'
+import { CURRICULUM } from '../data/curriculum'
 
 // ---------- Tiện ích ----------
 function rint(min: number, max: number): number {
@@ -39,6 +40,13 @@ export const SHAPES = [
   { id: 'square', name: 'hình vuông' },
   { id: 'triangle', name: 'hình tam giác' },
   { id: 'rectangle', name: 'hình chữ nhật' },
+]
+
+export const SOLIDS = [
+  { id: 'cau', name: 'khối cầu', objects: ['⚽', '🏀', '🍊', '🔮', '🎾', '🌐'] },
+  { id: 'lapphuong', name: 'khối lập phương', objects: ['🎲', '🧊', '🧀', '🎁'] },
+  { id: 'tru', name: 'khối trụ', objects: ['🥫', '🥤', '🧴', '🔋', '🕯️', '🥁'] },
+  { id: 'chunhat', name: 'khối chữ nhật', objects: ['📦', '📚', '🧱', '📱', '🍫', '🧼'] },
 ]
 
 const ORDINAL_WORDS = ['thứ nhất', 'thứ hai', 'thứ ba', 'thứ tư', 'thứ năm', 'thứ sáu']
@@ -420,6 +428,42 @@ function genSpatial(l: Lesson): Question[] {
   return out
 }
 
+function genSolid(l: Lesson): Question[] {
+  const { questions = 6, variant = 'all' } = l.config
+  let pool = SOLIDS
+  if (variant === 'basic2') pool = [SOLIDS[0], SOLIDS[1]]
+  else if (variant === 'basic4') pool = SOLIDS
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const target = pool[i % pool.length]
+    const emoji = target.objects[rint(0, target.objects.length - 1)]
+    const others = shuffle(SOLIDS.filter((s) => s.id !== target.id)).slice(0, 3)
+    const options: Option[] = shuffle([target, ...others]).map((s) => ({ id: s.id, label: s.name }))
+    out.push({
+      id: nid(),
+      prompt: 'Đồ vật này có dạng khối gì?',
+      render: { kind: 'solid', emoji, name: target.name },
+      options,
+      answer: target.id,
+    })
+  }
+  return out
+}
+
+// Ôn tập cuối chặng: trộn các câu hỏi từ những bài trong cùng chặng.
+function genReview(l: Lesson): Question[] {
+  const { questions = 8 } = l.config
+  const unit = CURRICULUM.find((u) => u.lessons.some((x) => x.id === l.id))
+  if (!unit) return genCount(l)
+  const siblings = unit.lessons.filter((x) => x.activity !== 'review')
+  const pooled: Question[] = []
+  for (const s of siblings) {
+    const qs = generateQuestions(s)
+    pooled.push(...qs.slice(0, 2))
+  }
+  return shuffle(pooled).slice(0, questions)
+}
+
 // =====================================================================
 export function generateQuestions(lesson: Lesson): Question[] {
   switch (lesson.activity) {
@@ -453,6 +497,10 @@ export function generateQuestions(lesson: Lesson): Question[] {
       return genSortSize(lesson)
     case 'spatial':
       return genSpatial(lesson)
+    case 'solid':
+      return genSolid(lesson)
+    case 'review':
+      return genReview(lesson)
     default:
       return genCount(lesson)
   }

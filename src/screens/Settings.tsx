@@ -6,7 +6,15 @@ import { useStore } from '../store/store'
 const BAND_ORDER: AgeBand[] = ['be', 'nho', 'lon', 'tien-th']
 const AVATARS = ['🦊', '🐰', '🐨', '🐯', '🦁', '🐼', '🐸', '🐵', '🦄', '🐧', '🐷', '🐥']
 
-export function Settings({ onBack, onAddChild }: { onBack: () => void; onAddChild: () => void }) {
+export function Settings({
+  onBack,
+  onAddChild,
+  onOpenReport,
+}: {
+  onBack: () => void
+  onAddChild: () => void
+  onOpenReport: () => void
+}) {
   const { profiles, activeId, active, setActive, updateProfile, removeProfile, settings, setSettings } =
     useStore()
   const [confirmDel, setConfirmDel] = useState<string | null>(null)
@@ -22,6 +30,19 @@ export function Settings({ onBack, onAddChild }: { onBack: () => void; onAddChil
         </button>
         <h1 className="text-2xl font-extrabold text-honey-dark">Cài đặt</h1>
       </div>
+
+      {/* Báo cáo cho phụ huynh */}
+      <button
+        onClick={onOpenReport}
+        className="mb-5 flex w-full items-center gap-3 rounded-3xl bg-gradient-to-r from-sky to-sky-dark p-4 text-left text-white shadow active:scale-95"
+      >
+        <span className="text-3xl">📊</span>
+        <div className="flex-1">
+          <div className="text-base font-extrabold">Báo cáo học tập</div>
+          <div className="text-xs font-bold opacity-90">Xem tiến độ & độ chính xác của bé</div>
+        </div>
+        <span className="text-xl">➜</span>
+      </button>
 
       {/* Âm thanh */}
       <section className="mb-5 rounded-3xl bg-white p-4 shadow">

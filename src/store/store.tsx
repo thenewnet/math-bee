@@ -1,11 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { AgeBand, ChildProfile, ProgressMap } from '../types'
+import type { AgeBand, ChildProfile, LessonStat, StatsMap } from '../types'
 import { setSoundOn, setVoiceOn } from '../audio/sound'
 
 const K_PROFILES = 'mathbee.profiles'
 const K_ACTIVE = 'mathbee.active'
-const K_PROGRESS = 'mathbee.progress' // { [childId]: ProgressMap }
+const K_STATS = 'mathbee.stats.v2' // { [childId]: StatsMap }
 const K_SETTINGS = 'mathbee.settings'
 
 interface Settings {
@@ -17,14 +17,15 @@ interface AppState {
   profiles: ChildProfile[]
   activeId: string | null
   active: ChildProfile | null
-  progress: ProgressMap // của trẻ đang chọn
+  stats: StatsMap // của trẻ đang chọn
   settings: Settings
   addProfile: (name: string, avatar: string, ageBand: AgeBand) => ChildProfile
   updateProfile: (id: string, patch: Partial<ChildProfile>) => void
   removeProfile: (id: string) => void
   setActive: (id: string) => void
-  recordStars: (lessonId: string, stars: number) => void
+  recordResult: (lessonId: string, stars: number, correct: number, total: number) => void
   starsFor: (lessonId: string) => number
+  statFor: (lessonId: string) => LessonStat | undefined
   totalStars: () => number
   setSettings: (patch: Partial<Settings>) => void
 }
@@ -53,16 +54,14 @@ function genId(): string {
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [profiles, setProfiles] = useState<ChildProfile[]>(() => load(K_PROFILES, []))
   const [activeId, setActiveId] = useState<string | null>(() => load(K_ACTIVE, null))
-  const [allProgress, setAllProgress] = useState<Record<string, ProgressMap>>(() =>
-    load(K_PROGRESS, {}),
-  )
+  const [allStats, setAllStats] = useState<Record<string, StatsMap>>(() => load(K_STATS, {}))
   const [settings, setSettingsState] = useState<Settings>(() =>
     load(K_SETTINGS, { sound: true, voice: true }),
   )
 
   useEffect(() => save(K_PROFILES, profiles), [profiles])
   useEffect(() => save(K_ACTIVE, activeId), [activeId])
-  useEffect(() => save(K_PROGRESS, allProgress), [allProgress])
+  useEffect(() => save(K_STATS, allStats), [allStats])
   useEffect(() => {
     save(K_SETTINGS, settings)
     setSoundOn(settings.sound)
@@ -73,9 +72,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => profiles.find((p) => p.id === activeId) ?? null,
     [profiles, activeId],
   )
-  const progress = useMemo<ProgressMap>(
-    () => (activeId ? allProgress[activeId] ?? {} : {}),
-    [allProgress, activeId],
+  const stats = useMemo<StatsMap>(
+    () => (activeId ? allStats[activeId] ?? {} : {}),
+    [allStats, activeId],
   )
 
   const addProfile = useCallback((name: string, avatar: string, ageBand: AgeBand) => {
@@ -91,7 +90,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const removeProfile = useCallback((id: string) => {
     setProfiles((prev) => prev.filter((p) => p.id !== id))
-    setAllProgress((prev) => {
+    setAllStats((prev) => {
       const next = { ...prev }
       delete next[id]
       return next
@@ -101,22 +100,30 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const setActive = useCallback((id: string) => setActiveId(id), [])
 
-  const recordStars = useCallback(
-    (lessonId: string, stars: number) => {
+  const recordResult = useCallback(
+    (lessonId: string, stars: number, correct: number, total: number) => {
       if (!activeId) return
-      setAllProgress((prev) => {
-        const childProg = prev[activeId] ?? {}
-        const best = Math.max(childProg[lessonId] ?? 0, stars)
-        return { ...prev, [activeId]: { ...childProg, [lessonId]: best } }
+      setAllStats((prev) => {
+        const childStats = prev[activeId] ?? {}
+        const cur = childStats[lessonId]
+        const merged: LessonStat = {
+          stars: Math.max(cur?.stars ?? 0, stars),
+          plays: (cur?.plays ?? 0) + 1,
+          correct: (cur?.correct ?? 0) + correct,
+          total: (cur?.total ?? 0) + total,
+          lastPlayed: Date.now(),
+        }
+        return { ...prev, [activeId]: { ...childStats, [lessonId]: merged } }
       })
     },
     [activeId],
   )
 
-  const starsFor = useCallback((lessonId: string) => progress[lessonId] ?? 0, [progress])
+  const starsFor = useCallback((lessonId: string) => stats[lessonId]?.stars ?? 0, [stats])
+  const statFor = useCallback((lessonId: string) => stats[lessonId], [stats])
   const totalStars = useCallback(
-    () => Object.values(progress).reduce((a, b) => a + b, 0),
-    [progress],
+    () => Object.values(stats).reduce((a, s) => a + (s.stars ?? 0), 0),
+    [stats],
   )
   const setSettings = useCallback(
     (patch: Partial<Settings>) => setSettingsState((s) => ({ ...s, ...patch })),
@@ -127,14 +134,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     profiles,
     activeId,
     active,
-    progress,
+    stats,
     settings,
     addProfile,
     updateProfile,
     removeProfile,
     setActive,
-    recordStars,
+    recordResult,
     starsFor,
+    statFor,
     totalStars,
     setSettings,
   }

@@ -6,11 +6,12 @@ import { Home } from './screens/Home'
 import { LessonPlayer } from './screens/LessonPlayer'
 import { Rewards } from './screens/Rewards'
 import { Settings } from './screens/Settings'
+import { Report } from './screens/Report'
 
-type Screen = 'home' | 'lesson' | 'rewards' | 'settings' | 'onboarding'
+type Screen = 'home' | 'lesson' | 'rewards' | 'settings' | 'report' | 'onboarding'
 
 export default function App() {
-  const { profiles, active, recordStars } = useStore()
+  const { profiles, active, recordResult } = useStore()
   const [screen, setScreen] = useState<Screen>('home')
   const [lesson, setLesson] = useState<Lesson | null>(null)
 
@@ -41,15 +42,21 @@ export default function App() {
           key={lesson.id}
           lesson={lesson}
           onExit={() => setScreen('home')}
-          onDone={(stars) => recordStars(lesson.id, stars)}
+          onDone={(stars, correct, total) => recordResult(lesson.id, stars, correct, total)}
         />
       )}
 
       {screen === 'rewards' && <Rewards onBack={() => setScreen('home')} />}
 
       {screen === 'settings' && (
-        <Settings onBack={() => setScreen('home')} onAddChild={() => setScreen('onboarding')} />
+        <Settings
+          onBack={() => setScreen('home')}
+          onAddChild={() => setScreen('onboarding')}
+          onOpenReport={() => setScreen('report')}
+        />
       )}
+
+      {screen === 'report' && <Report onBack={() => setScreen('settings')} />}
     </main>
   )
 }
