@@ -15,6 +15,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
   const [theme, setTheme] = useState<InterestTheme>('classic')
   const [avatar, setAvatar] = useState(THEME_AVATARS.classic[0])
   const [band, setBand] = useState<AgeBand>('lon')
+  const [montessori, setMontessori] = useState(false)
 
   const avatars = THEME_AVATARS[theme]
 
@@ -25,7 +26,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
 
   function submit() {
     unlockAudio()
-    addProfile(name, avatar, band, theme)
+    addProfile(name, avatar, band, theme, montessori)
     speak(`Xin chào ${name || 'bé'}! Cùng học toán nào!`)
     onDone()
   }
@@ -109,6 +110,28 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           Có thể đổi độ tuổi và chủ đề bất kỳ lúc nào trong phần cài đặt.
         </p>
       </div>
+
+      <button
+        onClick={() => setMontessori((v) => !v)}
+        className={`flex items-center gap-3 rounded-2xl border-4 p-3 text-left transition ${
+          montessori ? 'border-grass bg-grass/15' : 'border-white bg-white'
+        }`}
+      >
+        <span className="text-3xl">🧩</span>
+        <div className="flex-1">
+          <div className="text-sm font-extrabold text-ink">Chế độ Montessori</div>
+          <div className="text-[11px] font-bold leading-tight text-ink/55">
+            Học bằng thanh số & hạt cườm, phản hồi điềm đạm, có bài tập tô chữ số
+          </div>
+        </div>
+        <span
+          className={`relative h-7 w-12 shrink-0 rounded-full transition ${montessori ? 'bg-grass' : 'bg-black/20'}`}
+        >
+          <span
+            className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow transition-all ${montessori ? 'left-[22px]' : 'left-0.5'}`}
+          />
+        </span>
+      </button>
 
       <button
         onClick={submit}

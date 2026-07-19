@@ -1,6 +1,9 @@
 import type { Question } from '../types'
 import { ObjectGroup } from './ObjectGroup'
 import { Shape } from './Shape'
+import { Solid3D } from './Solid3D'
+import { Glyph } from './Creatures'
+import { BeadBar, NumberRod } from './Montessori'
 
 const SHAPE_ASK: Record<string, string> = {
   circle: 'hình tròn',
@@ -17,13 +20,17 @@ function Panel({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function QuestionView({ q }: { q: Question }) {
+export function QuestionView({ q, montessori = false }: { q: Question; montessori?: boolean }) {
   const r = q.render
   switch (r.kind) {
     case 'objects':
       return (
         <Panel>
-          <ObjectGroup icon={r.icon} count={r.count} size="lg" />
+          {montessori ? (
+            <NumberRod n={r.count} />
+          ) : (
+            <ObjectGroup icon={r.icon} count={r.count} size="lg" />
+          )}
         </Panel>
       )
 
@@ -31,10 +38,10 @@ export function QuestionView({ q }: { q: Question }) {
       return (
         <div className="grid grid-cols-2 gap-3">
           <div className="flex min-h-[150px] items-center justify-center rounded-3xl bg-sky/15 p-3 shadow-inner">
-            <ObjectGroup icon={r.left.icon} count={r.left.count} />
+            {montessori ? <NumberRod n={r.left.count} /> : <ObjectGroup icon={r.left.icon} count={r.left.count} />}
           </div>
           <div className="flex min-h-[150px] items-center justify-center rounded-3xl bg-berry/15 p-3 shadow-inner">
-            <ObjectGroup icon={r.right.icon} count={r.right.count} />
+            {montessori ? <NumberRod n={r.right.count} /> : <ObjectGroup icon={r.right.icon} count={r.right.count} />}
           </div>
         </div>
       )
@@ -44,11 +51,11 @@ export function QuestionView({ q }: { q: Question }) {
         <Panel>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <div className="rounded-2xl bg-sky/15 p-2">
-              <ObjectGroup icon={r.icon} count={r.a} />
+              {montessori ? <BeadBar n={r.a} /> : <ObjectGroup icon={r.icon} count={r.a} />}
             </div>
             <span className="text-4xl font-extrabold text-honey-dark">➕</span>
             <div className="rounded-2xl bg-grass/15 p-2">
-              <ObjectGroup icon={r.icon} count={r.b} />
+              {montessori ? <BeadBar n={r.b} /> : <ObjectGroup icon={r.icon} count={r.b} />}
             </div>
           </div>
         </Panel>
@@ -58,9 +65,9 @@ export function QuestionView({ q }: { q: Question }) {
       return (
         <Panel>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <ObjectGroup icon={r.icon} count={r.a} />
+            {montessori ? <BeadBar n={r.a} /> : <ObjectGroup icon={r.icon} count={r.a} />}
             <span className="text-4xl font-extrabold text-honey-dark">＋</span>
-            <ObjectGroup icon={r.icon} count={r.b} />
+            {montessori ? <BeadBar n={r.b} /> : <ObjectGroup icon={r.icon} count={r.b} />}
             <span className="text-4xl font-extrabold text-honey-dark">＝</span>
             <span className="text-5xl font-extrabold text-ink">?</span>
           </div>
@@ -71,7 +78,11 @@ export function QuestionView({ q }: { q: Question }) {
       return (
         <Panel>
           <div className="text-center">
-            <ObjectGroup icon={r.icon} count={r.total} crossed={r.known} />
+            {montessori ? (
+              <BeadBar n={r.total} crossed={r.known} />
+            ) : (
+              <ObjectGroup icon={r.icon} count={r.total} crossed={r.known} />
+            )}
             <p className="mt-3 text-sm font-bold text-ink/70">
               Gạch bỏ {r.known} cái, còn lại mấy cái?
             </p>
@@ -83,7 +94,11 @@ export function QuestionView({ q }: { q: Question }) {
       return (
         <Panel>
           <div className="text-center">
-            <ObjectGroup icon={r.icon} count={r.total} crossed={r.take} />
+            {montessori ? (
+              <BeadBar n={r.total} crossed={r.take} />
+            ) : (
+              <ObjectGroup icon={r.icon} count={r.total} crossed={r.take} />
+            )}
             <p className="mt-3 text-sm font-bold text-ink/70">
               {r.total} bớt {r.take} còn lại mấy?
             </p>
@@ -98,8 +113,8 @@ export function QuestionView({ q }: { q: Question }) {
             <span className="shrink-0 text-2xl">🏁</span>
             {r.items.map((it, i) => (
               <div key={i} className="flex shrink-0 flex-col items-center">
-                <span className="text-4xl anim-pop" style={{ animationDelay: `${i * 0.06}s` }}>
-                  {it}
+                <span className="anim-pop" style={{ animationDelay: `${i * 0.06}s` }}>
+                  <Glyph token={it} size={40} />
                 </span>
               </div>
             ))}
@@ -155,7 +170,7 @@ export function QuestionView({ q }: { q: Question }) {
     case 'solid':
       return (
         <Panel>
-          <span className="text-8xl anim-pop leading-none">{r.emoji}</span>
+          <Solid3D kind={r.solidId} size={150} />
         </Panel>
       )
 

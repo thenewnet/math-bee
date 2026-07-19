@@ -3,6 +3,7 @@ import type { Lesson, Question } from '../types'
 import { generateQuestions } from '../engine/generators'
 import { QuestionView } from '../components/QuestionView'
 import { OptionButton } from '../components/OptionButton'
+import { TraceNumber } from '../components/TraceNumber'
 import { Stars } from '../components/Stars'
 import { Mascot } from '../components/Mascot'
 import { Confetti } from '../components/Confetti'
@@ -31,6 +32,7 @@ export function LessonPlayer({
 }) {
   const { active } = useStore()
   const interest = active?.theme
+  const montessori = !!active?.montessori
   const questions = useMemo<Question[]>(
     () => generateQuestions(lesson, interest),
     [lesson, interest],
@@ -73,7 +75,7 @@ export function LessonPlayer({
 
   function finish(stars: number) {
     setFinished(true)
-    setConfetti((c) => c + 1)
+    if (!montessori) setConfetti((c) => c + 1)
     playCelebrate()
     const msg = stars === 3 ? 'Hoàn hảo! Bé được 3 sao!' : stars === 2 ? 'Làm tốt lắm!' : 'Hoàn thành rồi!'
     window.setTimeout(() => speak(msg), 300)
@@ -94,8 +96,8 @@ export function LessonPlayer({
       const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)]
       setFeedback(praise)
       window.setTimeout(() => speak(praise), 120)
-      setConfetti((c) => c + 1)
-      advanceTimer.current = window.setTimeout(next, 1400)
+      if (!montessori) setConfetti((c) => c + 1)
+      advanceTimer.current = window.setTimeout(next, montessori ? 1000 : 1400)
     } else {
       mistakeRef.current = true
       setWrongIds((prev) => new Set(prev).add(optionId))
@@ -168,45 +170,64 @@ export function LessonPlayer({
         <span className="text-xl">🔊</span>
       </button>
 
-      {/* visual */}
-      <div className="mb-4">
-        <QuestionView q={q} />
-      </div>
+      {q.render.kind === 'trace' ? (
+        /* Bài tập tô chữ số (Montessori) — không có lựa chọn */
+        <div className="mt-2 flex flex-col items-center">
+          <TraceNumber
+            key={q.id}
+            value={q.render.value}
+            onComplete={() => {
+              if (!solved) choose(q.answer)
+            }}
+          />
+          <div className="mt-3 h-7 text-center text-lg font-extrabold">
+            {feedback && <span className="text-grass-dark">{feedback}</span>}
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* visual */}
+          <div className="mb-4">
+            <QuestionView q={q} montessori={montessori} />
+          </div>
 
-      {/* feedback bubble */}
-      <div className="mb-2 h-7 text-center text-lg font-extrabold">
-        {feedback && (
-          <span className={solved ? 'text-grass-dark' : 'text-coral'}>{feedback}</span>
-        )}
-      </div>
+          {/* feedback bubble */}
+          <div className="mb-2 h-7 text-center text-lg font-extrabold">
+            {feedback && (
+              <span className={solved ? 'text-grass-dark' : 'text-coral'}>{feedback}</span>
+            )}
+          </div>
 
-      {/* options */}
-      <div
-        className={`grid gap-3 ${q.options.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'}`}
-      >
-        {q.options.map((opt) => {
-          const isAnswer = opt.id === q.answer
-          const state = solved
-            ? isAnswer
-              ? 'correct'
-              : 'dim'
-            : wrongIds.has(opt.id)
-              ? 'wrong'
-              : 'idle'
-          return (
-            <OptionButton
-              key={opt.id}
-              option={opt}
-              state={state}
-              disabled={solved || wrongIds.has(opt.id)}
-              onClick={() => {
-                if (isAnswer && !solved) playStar()
-                choose(opt.id)
-              }}
-            />
-          )
-        })}
-      </div>
+          {/* options */}
+          <div
+            className={`grid gap-3 ${q.options.length <= 2 ? 'grid-cols-2' : 'grid-cols-2 sm:grid-cols-4'}`}
+          >
+            {q.options.map((opt) => {
+              const isAnswer = opt.id === q.answer
+              const state = solved
+                ? isAnswer
+                  ? 'correct'
+                  : 'dim'
+                : wrongIds.has(opt.id)
+                  ? 'wrong'
+                  : 'idle'
+              return (
+                <OptionButton
+                  key={opt.id}
+                  option={opt}
+                  state={state}
+                  montessori={montessori}
+                  disabled={solved || wrongIds.has(opt.id)}
+                  onClick={() => {
+                    if (isAnswer && !solved && !montessori) playStar()
+                    choose(opt.id)
+                  }}
+                />
+              )
+            })}
+          </div>
+        </>
+      )}
     </div>
   )
 }

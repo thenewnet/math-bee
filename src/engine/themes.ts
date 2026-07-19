@@ -16,7 +16,15 @@ export const THEMES: Record<string, string[]> = {
 export const INTEREST_ICONS: Record<Exclude<InterestTheme, 'classic'>, string[]> = {
   robot: ['🤖', '🦾', '🦿', '🛸', '🚀', '🛰️', '📡', '🔋', '⚙️', '💡', '🔧', '🎛️'],
   hero: ['🦸', '🦸‍♂️', '🦸‍♀️', '🦹', '🛡️', '⚡', '💥', '🔥', '⭐', '🌟', '🏆', '🦇'],
-  monster: ['👾', '🐲', '🐉', '🦖', '🦕', '👹', '👻', '🦎', '🐙', '🦄', '🐊', '🦂'],
+  // Nhân vật GỐC (SVG) — xem src/components/Creatures.tsx
+  monster: [
+    'creature:slime',
+    'creature:spike',
+    'creature:ears',
+    'creature:horn',
+    'creature:star',
+    'creature:bot',
+  ],
 }
 
 // Avatar gợi ý theo chủ đề (đứng đầu danh sách khi bé chọn chủ đề đó).
