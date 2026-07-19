@@ -1,5 +1,5 @@
-import type { Lesson, Option, Question } from '../types'
-import { pickIcon, themeIcons } from './themes'
+import type { InterestTheme, Lesson, Option, Question } from '../types'
+import { pickFrom, resolveIcons } from './themes'
 import { CURRICULUM } from '../data/curriculum'
 
 // ---------- Tiện ích ----------
@@ -61,11 +61,12 @@ const TIME_OF_DAY = [
 //  Các bộ sinh câu hỏi theo dạng bài
 // =====================================================================
 
-function genCount(l: Lesson): Question[] {
+function genCount(l: Lesson, interest?: InterestTheme): Question[] {
   const { min = 1, max = 5, questions = 6, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const count = rint(min, max)
     out.push({
       id: nid(),
@@ -78,11 +79,12 @@ function genCount(l: Lesson): Question[] {
   return out
 }
 
-function genDigitToQuantity(l: Lesson): Question[] {
+function genDigitToQuantity(l: Lesson, interest?: InterestTheme): Question[] {
   const { min = 1, max = 5, questions = 6, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const value = rint(min, max)
     const counts = new Set<number>([value])
     while (counts.size < 4) counts.add(rint(Math.max(1, min), max + 1))
@@ -101,10 +103,10 @@ function genDigitToQuantity(l: Lesson): Question[] {
   return out
 }
 
-function genCompare(l: Lesson): Question[] {
+function genCompare(l: Lesson, interest?: InterestTheme): Question[] {
   const { min = 1, max = 5, questions = 6, variant = 'more' } = l.config
   const out: Question[] = []
-  const icons = themeIcons('animal')
+  const icons = resolveIcons(interest, 'animal')
   for (let i = 0; i < questions; i++) {
     const leftIcon = icons[i % icons.length]
     const rightIcon = icons[(i + 3) % icons.length]
@@ -144,11 +146,12 @@ function genCompare(l: Lesson): Question[] {
   return out
 }
 
-function genCountTo10(l: Lesson): Question[] {
+function genCountTo10(l: Lesson, interest?: InterestTheme): Question[] {
   const { min = 5, max = 10, questions = 8, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const count = rint(min, max)
     out.push({
       id: nid(),
@@ -183,10 +186,10 @@ function genSequence(l: Lesson): Question[] {
   return out
 }
 
-function genOrdinal(l: Lesson): Question[] {
+function genOrdinal(l: Lesson, interest?: InterestTheme): Question[] {
   const { min = 3, max = 6, questions = 6 } = l.config
   const out: Question[] = []
-  const pool = themeIcons('animal')
+  const pool = resolveIcons(interest, 'animal')
   for (let i = 0; i < questions; i++) {
     const n = rint(min, max)
     const items = shuffle(pool).slice(0, n)
@@ -212,11 +215,12 @@ function genOrdinal(l: Lesson): Question[] {
   return out
 }
 
-function genCompose(l: Lesson): Question[] {
+function genCompose(l: Lesson, interest?: InterestTheme): Question[] {
   const { max = 10, questions = 6, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const a = rint(1, Math.max(1, max - 1))
     const b = rint(1, Math.max(1, max - a))
     const total = a + b
@@ -231,11 +235,12 @@ function genCompose(l: Lesson): Question[] {
   return out
 }
 
-function genDecompose(l: Lesson): Question[] {
+function genDecompose(l: Lesson, interest?: InterestTheme): Question[] {
   const { max = 10, questions = 6, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const total = rint(2, max)
     const known = rint(1, total - 1)
     const rest = total - known
@@ -250,11 +255,12 @@ function genDecompose(l: Lesson): Question[] {
   return out
 }
 
-function genAdd(l: Lesson): Question[] {
+function genAdd(l: Lesson, interest?: InterestTheme): Question[] {
   const { max = 10, questions = 8, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const a = rint(1, Math.max(1, max - 1))
     const b = rint(1, Math.max(1, max - a))
     const total = a + b
@@ -269,11 +275,12 @@ function genAdd(l: Lesson): Question[] {
   return out
 }
 
-function genSubtract(l: Lesson): Question[] {
+function genSubtract(l: Lesson, interest?: InterestTheme): Question[] {
   const { max = 10, questions = 8, theme } = l.config
+  const icons = resolveIcons(interest, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
-    const icon = pickIcon(theme)
+    const icon = pickFrom(icons)
     const total = rint(2, max)
     const take = rint(1, total - 1)
     const rest = total - take
@@ -451,44 +458,44 @@ function genSolid(l: Lesson): Question[] {
 }
 
 // Ôn tập cuối chặng: trộn các câu hỏi từ những bài trong cùng chặng.
-function genReview(l: Lesson): Question[] {
+function genReview(l: Lesson, interest?: InterestTheme): Question[] {
   const { questions = 8 } = l.config
   const unit = CURRICULUM.find((u) => u.lessons.some((x) => x.id === l.id))
-  if (!unit) return genCount(l)
+  if (!unit) return genCount(l, interest)
   const siblings = unit.lessons.filter((x) => x.activity !== 'review')
   const pooled: Question[] = []
   for (const s of siblings) {
-    const qs = generateQuestions(s)
+    const qs = generateQuestions(s, interest)
     pooled.push(...qs.slice(0, 2))
   }
   return shuffle(pooled).slice(0, questions)
 }
 
 // =====================================================================
-export function generateQuestions(lesson: Lesson): Question[] {
+export function generateQuestions(lesson: Lesson, interest?: InterestTheme): Question[] {
   switch (lesson.activity) {
     case 'count':
-      return genCount(lesson)
+      return genCount(lesson, interest)
     case 'recognizeDigit':
-      return genCount(lesson)
+      return genCount(lesson, interest)
     case 'digitToQuantity':
-      return genDigitToQuantity(lesson)
+      return genDigitToQuantity(lesson, interest)
     case 'compareQuantity':
-      return genCompare(lesson)
+      return genCompare(lesson, interest)
     case 'countTo10':
-      return genCountTo10(lesson)
+      return genCountTo10(lesson, interest)
     case 'sequence':
       return genSequence(lesson)
     case 'ordinal':
-      return genOrdinal(lesson)
+      return genOrdinal(lesson, interest)
     case 'compose':
-      return genCompose(lesson)
+      return genCompose(lesson, interest)
     case 'decompose':
-      return genDecompose(lesson)
+      return genDecompose(lesson, interest)
     case 'add':
-      return genAdd(lesson)
+      return genAdd(lesson, interest)
     case 'subtract':
-      return genSubtract(lesson)
+      return genSubtract(lesson, interest)
     case 'shape':
       return genShape(lesson)
     case 'pattern':
@@ -500,8 +507,8 @@ export function generateQuestions(lesson: Lesson): Question[] {
     case 'solid':
       return genSolid(lesson)
     case 'review':
-      return genReview(lesson)
+      return genReview(lesson, interest)
     default:
-      return genCount(lesson)
+      return genCount(lesson, interest)
   }
 }

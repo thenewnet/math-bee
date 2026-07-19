@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { AgeBand, ChildProfile, LessonStat, StatsMap } from '../types'
+import type { AgeBand, ChildProfile, InterestTheme, LessonStat, StatsMap } from '../types'
 import { setSoundOn, setVoiceOn } from '../audio/sound'
 
 const K_PROFILES = 'mathbee.profiles'
@@ -19,7 +19,12 @@ interface AppState {
   active: ChildProfile | null
   stats: StatsMap // của trẻ đang chọn
   settings: Settings
-  addProfile: (name: string, avatar: string, ageBand: AgeBand) => ChildProfile
+  addProfile: (
+    name: string,
+    avatar: string,
+    ageBand: AgeBand,
+    theme?: InterestTheme,
+  ) => ChildProfile
   updateProfile: (id: string, patch: Partial<ChildProfile>) => void
   removeProfile: (id: string) => void
   setActive: (id: string) => void
@@ -77,12 +82,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [allStats, activeId],
   )
 
-  const addProfile = useCallback((name: string, avatar: string, ageBand: AgeBand) => {
-    const p: ChildProfile = { id: genId(), name: name.trim() || 'Bé', avatar, ageBand, createdAt: Date.now() }
-    setProfiles((prev) => [...prev, p])
-    setActiveId(p.id)
-    return p
-  }, [])
+  const addProfile = useCallback(
+    (name: string, avatar: string, ageBand: AgeBand, theme: InterestTheme = 'classic') => {
+      const p: ChildProfile = {
+        id: genId(),
+        name: name.trim() || 'Bé',
+        avatar,
+        ageBand,
+        theme,
+        createdAt: Date.now(),
+      }
+      setProfiles((prev) => [...prev, p])
+      setActiveId(p.id)
+      return p
+    },
+    [],
+  )
 
   const updateProfile = useCallback((id: string, patch: Partial<ChildProfile>) => {
     setProfiles((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)))

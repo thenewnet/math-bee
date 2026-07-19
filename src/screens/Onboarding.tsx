@@ -1,22 +1,31 @@
 import { useState } from 'react'
-import type { AgeBand } from '../types'
-import { AGE_BANDS } from '../types'
+import type { AgeBand, InterestTheme } from '../types'
+import { AGE_BANDS, INTEREST_THEMES } from '../types'
+import { THEME_AVATARS } from '../engine/themes'
 import { useStore } from '../store/store'
 import { Mascot } from '../components/Mascot'
 import { speak, unlockAudio } from '../audio/sound'
 
-const AVATARS = ['🦊', '🐰', '🐨', '🐯', '🦁', '🐼', '🐸', '🐵', '🦄', '🐧', '🐷', '🐥']
 const BAND_ORDER: AgeBand[] = ['be', 'nho', 'lon', 'tien-th']
+const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster']
 
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const { addProfile } = useStore()
   const [name, setName] = useState('')
-  const [avatar, setAvatar] = useState(AVATARS[0])
+  const [theme, setTheme] = useState<InterestTheme>('classic')
+  const [avatar, setAvatar] = useState(THEME_AVATARS.classic[0])
   const [band, setBand] = useState<AgeBand>('lon')
+
+  const avatars = THEME_AVATARS[theme]
+
+  function chooseTheme(t: InterestTheme) {
+    setTheme(t)
+    setAvatar(THEME_AVATARS[t][0]) // đổi avatar mặc định theo chủ đề
+  }
 
   function submit() {
     unlockAudio()
-    addProfile(name, avatar, band)
+    addProfile(name, avatar, band, theme)
     speak(`Xin chào ${name || 'bé'}! Cùng học toán nào!`)
     onDone()
   }
@@ -41,9 +50,32 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
+        <label className="mb-2 block text-sm font-extrabold text-ink">Bé thích chủ đề nào?</label>
+        <div className="grid grid-cols-2 gap-2">
+          {THEME_ORDER.map((t) => (
+            <button
+              key={t}
+              onClick={() => chooseTheme(t)}
+              className={`flex items-center gap-2 rounded-2xl border-4 p-3 text-left transition ${
+                theme === t ? 'border-honey bg-honey/20' : 'border-white bg-white'
+              }`}
+            >
+              <span className="text-3xl">{INTEREST_THEMES[t].emoji}</span>
+              <div>
+                <div className="text-sm font-extrabold text-ink">{INTEREST_THEMES[t].label}</div>
+                <div className="text-[10px] font-bold leading-tight text-ink/50">
+                  {INTEREST_THEMES[t].desc}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
         <label className="mb-2 block text-sm font-extrabold text-ink">Chọn nhân vật</label>
         <div className="grid grid-cols-6 gap-2">
-          {AVATARS.map((a) => (
+          {avatars.map((a) => (
             <button
               key={a}
               onClick={() => setAvatar(a)}
@@ -74,7 +106,7 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
           ))}
         </div>
         <p className="mt-2 text-center text-xs font-semibold text-ink/50">
-          Có thể đổi độ tuổi bất kỳ lúc nào trong phần cài đặt.
+          Có thể đổi độ tuổi và chủ đề bất kỳ lúc nào trong phần cài đặt.
         </p>
       </div>
 

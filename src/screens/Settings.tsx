@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import type { AgeBand } from '../types'
-import { AGE_BANDS } from '../types'
+import type { AgeBand, InterestTheme } from '../types'
+import { AGE_BANDS, INTEREST_THEMES } from '../types'
+import { THEME_AVATARS } from '../engine/themes'
 import { useStore } from '../store/store'
 
 const BAND_ORDER: AgeBand[] = ['be', 'nho', 'lon', 'tien-th']
-const AVATARS = ['🦊', '🐰', '🐨', '🐯', '🦁', '🐼', '🐸', '🐵', '🦄', '🐧', '🐷', '🐥']
+const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster']
 
 export function Settings({
   onBack,
@@ -100,9 +101,33 @@ export function Settings({
                 )}
               </div>
 
-              {/* đổi avatar */}
+              {/* đổi chủ đề yêu thích */}
+              <div className="mt-3">
+                <div className="mb-1 text-[11px] font-extrabold text-ink/60">Chủ đề</div>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {THEME_ORDER.map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => {
+                        const themedDefault = THEME_AVATARS[t][0]
+                        // nếu avatar hiện tại không thuộc chủ đề mới, đổi sang avatar mặc định của chủ đề
+                        const keep = THEME_AVATARS[t].includes(p.avatar)
+                        updateProfile(p.id, { theme: t, avatar: keep ? p.avatar : themedDefault })
+                      }}
+                      className={`flex flex-col items-center gap-0.5 rounded-lg py-1.5 text-[10px] font-extrabold ${
+                        (p.theme ?? 'classic') === t ? 'bg-honey text-white' : 'bg-black/5 text-ink/70'
+                      }`}
+                    >
+                      <span className="text-lg">{INTEREST_THEMES[t].emoji}</span>
+                      {INTEREST_THEMES[t].label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* đổi avatar (theo chủ đề đang chọn) */}
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {AVATARS.map((a) => (
+                {THEME_AVATARS[p.theme ?? 'classic'].map((a) => (
                   <button
                     key={a}
                     onClick={() => updateProfile(p.id, { avatar: a })}
