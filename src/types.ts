@@ -41,6 +41,10 @@ export type ActivityType =
   | 'sequence' // đếm tiếp / số còn thiếu trong dãy
   | 'solid' // nhận biết khối 3 chiều (cầu, trụ, lập phương, chữ nhật)
   | 'trace' // tập tô chữ số (chữ số nhám Montessori)
+  | 'goldenBeads' // hệ thập phân hạt vàng (đơn vị – chục – trăm)
+  | 'hundredBoard' // bảng 100
+  | 'snake' // trò "con rắn cộng" (cộng chuỗi thanh hạt)
+  | 'seriation' // xếp thứ tự kích thước kiểu Tháp Hồng
   | 'review' // ôn tập cuối chặng (tổng hợp các dạng bài trong chặng)
 
 export interface LessonConfig {
@@ -77,9 +81,17 @@ export interface ChildProfile {
   name: string
   avatar: string // emoji
   ageBand: AgeBand
-  theme?: InterestTheme // chủ đề yêu thích (mặc định 'classic')
+  theme?: InterestTheme // (cũ) chủ đề đơn — giữ để tương thích
+  themes?: InterestTheme[] // chủ đề yêu thích (có thể chọn nhiều)
   montessori?: boolean // bật chế độ học cụ Montessori
   createdAt: number
+}
+
+// Danh sách chủ đề hiệu lực của một hồ sơ (tương thích dữ liệu cũ).
+export function profileThemes(p: Pick<ChildProfile, 'themes' | 'theme'>): InterestTheme[] {
+  if (p.themes && p.themes.length) return p.themes
+  if (p.theme) return [p.theme]
+  return ['classic']
 }
 
 // map lessonId -> số sao đạt cao nhất (0..3); có mặt = đã hoàn thành
@@ -117,6 +129,10 @@ export type QuestionRender =
   | { kind: 'shape'; target: string }
   | { kind: 'solid'; solidId: string; name: string }
   | { kind: 'trace'; value: number }
+  | { kind: 'goldenBeads'; value: number }
+  | { kind: 'hundredBoard'; missing: number }
+  | { kind: 'snake'; bars: number[] }
+  | { kind: 'seriation'; sizes: number[] }
   | { kind: 'digit'; value: number }
   | { kind: 'sequence'; sequence: (number | null)[] }
 

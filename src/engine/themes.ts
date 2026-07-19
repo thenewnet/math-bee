@@ -13,10 +13,10 @@ export const THEMES: Record<string, string[]> = {
 
 // Bộ icon theo chủ đề yêu thích của bé (robot / siêu nhân / quái vật).
 // Dùng biểu tượng nguyên bản, KHÔNG dùng nhân vật có bản quyền.
+// Tất cả là nhân vật GỐC (SVG) — xem src/components/Creatures.tsx (KHÔNG dùng ảnh bản quyền).
 export const INTEREST_ICONS: Record<Exclude<InterestTheme, 'classic'>, string[]> = {
-  robot: ['🤖', '🦾', '🦿', '🛸', '🚀', '🛰️', '📡', '🔋', '⚙️', '💡', '🔧', '🎛️'],
-  hero: ['🦸', '🦸‍♂️', '🦸‍♀️', '🦹', '🛡️', '⚡', '💥', '🔥', '⭐', '🌟', '🏆', '🦇'],
-  // Nhân vật GỐC (SVG) — xem src/components/Creatures.tsx
+  robot: ['robot:box', 'robot:dome', 'robot:tread', 'robot:rocket', 'robot:claw'],
+  hero: ['hero:cape', 'hero:mask', 'hero:bolt', 'hero:star', 'hero:shield'],
   monster: [
     'creature:slime',
     'creature:spike',
@@ -39,11 +39,14 @@ export function themeIcons(name?: string): string[] {
   return THEMES[name ?? 'fruit'] ?? THEMES.fruit
 }
 
-// Trả về bộ icon phù hợp: ưu tiên chủ đề yêu thích của bé, nếu là 'classic' thì
-// dùng bộ icon mặc định của bài học.
-export function resolveIcons(interest: InterestTheme | undefined, lessonTheme?: string): string[] {
-  if (interest && interest !== 'classic') return INTEREST_ICONS[interest]
-  return themeIcons(lessonTheme)
+// Trả về bộ icon phù hợp: gộp icon của TẤT CẢ chủ đề bé chọn (trừ 'classic').
+// Nếu không chọn chủ đề nào (hoặc chỉ 'classic') thì dùng bộ icon của bài học.
+export function resolveIcons(themes: InterestTheme[] | undefined, lessonTheme?: string): string[] {
+  const active = (themes ?? []).filter(
+    (t): t is Exclude<InterestTheme, 'classic'> => t !== 'classic',
+  )
+  if (active.length === 0) return themeIcons(lessonTheme)
+  return active.flatMap((t) => INTEREST_ICONS[t])
 }
 
 export function pickFrom(icons: string[]): string {

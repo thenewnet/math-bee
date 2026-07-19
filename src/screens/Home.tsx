@@ -1,5 +1,5 @@
 import type { Lesson, Unit } from '../types'
-import { AGE_BANDS, INTEREST_THEMES } from '../types'
+import { AGE_BANDS, INTEREST_THEMES, profileThemes } from '../types'
 import { CURRICULUM, ALL_LESSONS } from '../data/curriculum'
 import { useStore } from '../store/store'
 import { Stars } from '../components/Stars'
@@ -69,11 +69,14 @@ export function Home({
       <div className="mx-4 mb-4 mt-2 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-honey to-honey-dark p-4 text-white shadow-lg">
         <div className="relative shrink-0">
           <BeeSvg size={64} />
-          {active?.theme && active.theme !== 'classic' && (
-            <span className="absolute -bottom-1 -right-1 text-2xl anim-bounce">
-              {INTEREST_THEMES[active.theme].emoji}
-            </span>
-          )}
+          {(() => {
+            const first = active ? profileThemes(active).find((t) => t !== 'classic') : undefined
+            return first ? (
+              <span className="absolute -bottom-1 -right-1 text-2xl anim-bounce">
+                {INTEREST_THEMES[first].emoji}
+              </span>
+            ) : null
+          })()}
         </div>
         <div className="flex-1">
           <div className="text-lg font-extrabold">Chào {active?.name}! 🌟</div>

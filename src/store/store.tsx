@@ -23,7 +23,7 @@ interface AppState {
     name: string,
     avatar: string,
     ageBand: AgeBand,
-    theme?: InterestTheme,
+    themes?: InterestTheme[],
     montessori?: boolean,
   ) => ChildProfile
   updateProfile: (id: string, patch: Partial<ChildProfile>) => void
@@ -88,7 +88,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       name: string,
       avatar: string,
       ageBand: AgeBand,
-      theme: InterestTheme = 'classic',
+      themes: InterestTheme[] = ['classic'],
       montessori = false,
     ) => {
       const p: ChildProfile = {
@@ -96,7 +96,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         name: name.trim() || 'Bé',
         avatar,
         ageBand,
-        theme,
+        themes: themes.length ? themes : ['classic'],
         montessori,
         createdAt: Date.now(),
       }

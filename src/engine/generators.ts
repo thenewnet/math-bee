@@ -55,9 +55,9 @@ const TIME_OF_DAY = [
 //  Các bộ sinh câu hỏi theo dạng bài
 // =====================================================================
 
-function genCount(l: Lesson, interest?: InterestTheme): Question[] {
+function genCount(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { min = 1, max = 5, questions = 6, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -73,9 +73,9 @@ function genCount(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genDigitToQuantity(l: Lesson, interest?: InterestTheme): Question[] {
+function genDigitToQuantity(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { min = 1, max = 5, questions = 6, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -97,10 +97,10 @@ function genDigitToQuantity(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genCompare(l: Lesson, interest?: InterestTheme): Question[] {
+function genCompare(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { min = 1, max = 5, questions = 6, variant = 'more' } = l.config
   const out: Question[] = []
-  const icons = resolveIcons(interest, 'animal')
+  const icons = resolveIcons(themes, 'animal')
   for (let i = 0; i < questions; i++) {
     const leftIcon = icons[i % icons.length]
     const rightIcon = icons[(i + 3) % icons.length]
@@ -140,9 +140,9 @@ function genCompare(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genCountTo10(l: Lesson, interest?: InterestTheme): Question[] {
+function genCountTo10(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { min = 5, max = 10, questions = 8, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -180,10 +180,10 @@ function genSequence(l: Lesson): Question[] {
   return out
 }
 
-function genOrdinal(l: Lesson, interest?: InterestTheme): Question[] {
+function genOrdinal(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { min = 3, max = 6, questions = 6 } = l.config
   const out: Question[] = []
-  const pool = resolveIcons(interest, 'animal')
+  const pool = resolveIcons(themes, 'animal')
   for (let i = 0; i < questions; i++) {
     const n = rint(min, max)
     const items = shuffle(pool).slice(0, n)
@@ -209,9 +209,9 @@ function genOrdinal(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genCompose(l: Lesson, interest?: InterestTheme): Question[] {
+function genCompose(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { max = 10, questions = 6, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -229,9 +229,9 @@ function genCompose(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genDecompose(l: Lesson, interest?: InterestTheme): Question[] {
+function genDecompose(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { max = 10, questions = 6, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -249,9 +249,9 @@ function genDecompose(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genAdd(l: Lesson, interest?: InterestTheme): Question[] {
+function genAdd(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { max = 10, questions = 8, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -269,9 +269,9 @@ function genAdd(l: Lesson, interest?: InterestTheme): Question[] {
   return out
 }
 
-function genSubtract(l: Lesson, interest?: InterestTheme): Question[] {
+function genSubtract(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { max = 10, questions = 8, theme } = l.config
-  const icons = resolveIcons(interest, theme)
+  const icons = resolveIcons(themes, theme)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const icon = pickFrom(icons)
@@ -464,45 +464,129 @@ function genTrace(l: Lesson): Question[] {
   }))
 }
 
+function genGoldenBeads(l: Lesson): Question[] {
+  const { min = 10, max = 99, questions = 8 } = l.config
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const value = rint(min, max)
+    // đáp án nhiễu: đảo chữ số, ±1, ±10
+    const cand = new Set<number>([value, value + 1, value - 1, value + 10, value - 10])
+    const swapped = Number(String(value).padStart(2, '0').split('').reverse().join(''))
+    if (swapped !== value) cand.add(swapped)
+    const opts = shuffle([...cand].filter((v) => v >= 0 && v <= max + 10 && v !== value)).slice(0, 3)
+    const options: Option[] = shuffle([value, ...opts]).map((d) => ({ id: `d${d}`, digit: d }))
+    out.push({
+      id: nid(),
+      prompt: 'Đây là số bao nhiêu?',
+      render: { kind: 'goldenBeads', value },
+      options,
+      answer: `d${value}`,
+    })
+  }
+  return out
+}
+
+function genHundredBoard(l: Lesson): Question[] {
+  const { questions = 8 } = l.config
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const missing = rint(2, 99)
+    const cand = new Set<number>([missing, missing + 1, missing - 1, missing + 10, missing - 10])
+    const opts = shuffle([...cand].filter((v) => v >= 1 && v <= 100 && v !== missing)).slice(0, 3)
+    const options: Option[] = shuffle([missing, ...opts]).map((d) => ({ id: `d${d}`, digit: d }))
+    out.push({
+      id: nid(),
+      prompt: 'Ô còn thiếu là số mấy?',
+      render: { kind: 'hundredBoard', missing },
+      options,
+      answer: `d${missing}`,
+    })
+  }
+  return out
+}
+
+function genSnake(l: Lesson): Question[] {
+  const { max = 18, questions = 8 } = l.config
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const bars: number[] = []
+    const n = rint(2, 4)
+    let sum = 0
+    for (let k = 0; k < n; k++) {
+      const v = rint(1, 9)
+      if (sum + v > max) break
+      bars.push(v)
+      sum += v
+    }
+    if (bars.length < 2) bars.push(1), (sum += 1)
+    out.push({
+      id: nid(),
+      prompt: 'Con rắn dài bao nhiêu hạt?',
+      render: { kind: 'snake', bars },
+      options: digitOptions(sum, 2, max),
+      answer: `d${sum}`,
+    })
+  }
+  return out
+}
+
+function genSeriation(l: Lesson): Question[] {
+  const { questions = 6 } = l.config
+  const pool = [0.32, 0.46, 0.6, 0.74, 0.9, 1.05]
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const count = rint(3, 4)
+    const sizes = shuffle(pool).slice(0, count)
+    out.push({
+      id: nid(),
+      prompt: 'Xếp tháp: chạm khối nhỏ nhất đến lớn nhất',
+      render: { kind: 'seriation', sizes },
+      options: [],
+      answer: 'done',
+    })
+  }
+  return out
+}
+
 // Ôn tập cuối chặng: trộn các câu hỏi từ những bài trong cùng chặng.
-function genReview(l: Lesson, interest?: InterestTheme): Question[] {
+function genReview(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { questions = 8 } = l.config
   const unit = CURRICULUM.find((u) => u.lessons.some((x) => x.id === l.id))
-  if (!unit) return genCount(l, interest)
+  if (!unit) return genCount(l, themes)
   const siblings = unit.lessons.filter((x) => x.activity !== 'review')
   const pooled: Question[] = []
   for (const s of siblings) {
-    const qs = generateQuestions(s, interest)
+    const qs = generateQuestions(s, themes)
     pooled.push(...qs.slice(0, 2))
   }
   return shuffle(pooled).slice(0, questions)
 }
 
 // =====================================================================
-export function generateQuestions(lesson: Lesson, interest?: InterestTheme): Question[] {
+export function generateQuestions(lesson: Lesson, themes?: InterestTheme[]): Question[] {
   switch (lesson.activity) {
     case 'count':
-      return genCount(lesson, interest)
+      return genCount(lesson, themes)
     case 'recognizeDigit':
-      return genCount(lesson, interest)
+      return genCount(lesson, themes)
     case 'digitToQuantity':
-      return genDigitToQuantity(lesson, interest)
+      return genDigitToQuantity(lesson, themes)
     case 'compareQuantity':
-      return genCompare(lesson, interest)
+      return genCompare(lesson, themes)
     case 'countTo10':
-      return genCountTo10(lesson, interest)
+      return genCountTo10(lesson, themes)
     case 'sequence':
       return genSequence(lesson)
     case 'ordinal':
-      return genOrdinal(lesson, interest)
+      return genOrdinal(lesson, themes)
     case 'compose':
-      return genCompose(lesson, interest)
+      return genCompose(lesson, themes)
     case 'decompose':
-      return genDecompose(lesson, interest)
+      return genDecompose(lesson, themes)
     case 'add':
-      return genAdd(lesson, interest)
+      return genAdd(lesson, themes)
     case 'subtract':
-      return genSubtract(lesson, interest)
+      return genSubtract(lesson, themes)
     case 'shape':
       return genShape(lesson)
     case 'pattern':
@@ -515,9 +599,17 @@ export function generateQuestions(lesson: Lesson, interest?: InterestTheme): Que
       return genSolid(lesson)
     case 'trace':
       return genTrace(lesson)
+    case 'goldenBeads':
+      return genGoldenBeads(lesson)
+    case 'hundredBoard':
+      return genHundredBoard(lesson)
+    case 'snake':
+      return genSnake(lesson)
+    case 'seriation':
+      return genSeriation(lesson)
     case 'review':
-      return genReview(lesson, interest)
+      return genReview(lesson, themes)
     default:
-      return genCount(lesson, interest)
+      return genCount(lesson, themes)
   }
 }

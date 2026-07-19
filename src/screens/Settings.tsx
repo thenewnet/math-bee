@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { AgeBand, InterestTheme } from '../types'
-import { AGE_BANDS, INTEREST_THEMES } from '../types'
+import { AGE_BANDS, INTEREST_THEMES, profileThemes } from '../types'
 import { THEME_AVATARS } from '../engine/themes'
 import { useStore } from '../store/store'
 
@@ -101,44 +101,67 @@ export function Settings({
                 )}
               </div>
 
-              {/* đổi chủ đề yêu thích */}
-              <div className="mt-3">
-                <div className="mb-1 text-[11px] font-extrabold text-ink/60">Chủ đề</div>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {THEME_ORDER.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => {
-                        const themedDefault = THEME_AVATARS[t][0]
-                        // nếu avatar hiện tại không thuộc chủ đề mới, đổi sang avatar mặc định của chủ đề
-                        const keep = THEME_AVATARS[t].includes(p.avatar)
-                        updateProfile(p.id, { theme: t, avatar: keep ? p.avatar : themedDefault })
-                      }}
-                      className={`flex flex-col items-center gap-0.5 rounded-lg py-1.5 text-[10px] font-extrabold ${
-                        (p.theme ?? 'classic') === t ? 'bg-honey text-white' : 'bg-black/5 text-ink/70'
-                      }`}
-                    >
-                      <span className="text-lg">{INTEREST_THEMES[t].emoji}</span>
-                      {INTEREST_THEMES[t].label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* đổi avatar (theo chủ đề đang chọn) */}
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {THEME_AVATARS[p.theme ?? 'classic'].map((a) => (
-                  <button
-                    key={a}
-                    onClick={() => updateProfile(p.id, { avatar: a })}
-                    className={`flex h-8 w-8 items-center justify-center rounded-lg text-lg ${
-                      p.avatar === a ? 'bg-honey/30 ring-2 ring-honey' : 'bg-black/5'
-                    }`}
-                  >
-                    {a}
-                  </button>
-                ))}
-              </div>
+              {/* đổi chủ đề yêu thích (chọn nhiều) */}
+              {(() => {
+                const cur = profileThemes(p)
+                const toggle = (t: InterestTheme) => {
+                  let next: InterestTheme[]
+                  if (t === 'classic') next = ['classic']
+                  else {
+                    const base = cur.filter((x) => x !== 'classic')
+                    next = base.includes(t) ? base.filter((x) => x !== t) : [...base, t]
+                    if (next.length === 0) next = ['classic']
+                  }
+                  const at = next.filter((x) => x !== 'classic')
+                  const list = (at.length ? at : ['classic']).flatMap(
+                    (x) => THEME_AVATARS[x as InterestTheme],
+                  )
+                  updateProfile(p.id, {
+                    themes: next,
+                    avatar: list.includes(p.avatar) ? p.avatar : list[0],
+                  })
+                }
+                const at = cur.filter((x) => x !== 'classic')
+                const avatarList = [
+                  ...new Set((at.length ? at : ['classic']).flatMap((x) => THEME_AVATARS[x as InterestTheme])),
+                ]
+                return (
+                  <>
+                    <div className="mt-3">
+                      <div className="mb-1 text-[11px] font-extrabold text-ink/60">
+                        Chủ đề (chọn nhiều)
+                      </div>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {THEME_ORDER.map((t) => (
+                          <button
+                            key={t}
+                            onClick={() => toggle(t)}
+                            className={`flex flex-col items-center gap-0.5 rounded-lg py-1.5 text-[10px] font-extrabold ${
+                              cur.includes(t) ? 'bg-honey text-white' : 'bg-black/5 text-ink/70'
+                            }`}
+                          >
+                            <span className="text-lg">{INTEREST_THEMES[t].emoji}</span>
+                            {INTEREST_THEMES[t].label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-1.5">
+                      {avatarList.map((a) => (
+                        <button
+                          key={a}
+                          onClick={() => updateProfile(p.id, { avatar: a })}
+                          className={`flex h-8 w-8 items-center justify-center rounded-lg text-lg ${
+                            p.avatar === a ? 'bg-honey/30 ring-2 ring-honey' : 'bg-black/5'
+                          }`}
+                        >
+                          {a}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )
+              })()}
 
               {/* đổi độ tuổi */}
               <div className="mt-3 grid grid-cols-4 gap-1.5">

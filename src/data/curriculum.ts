@@ -112,6 +112,7 @@ export const CURRICULUM: Unit[] = [
       { id: 'u7l1', title: 'To và Nhỏ', emoji: '🐘', activity: 'sortSize', skill: 'So sánh to – nhỏ', config: { questions: 6, variant: 'big' } },
       { id: 'u7l2', title: 'Dài và Ngắn', emoji: '✏️', activity: 'sortSize', skill: 'So sánh dài – ngắn', config: { questions: 6, variant: 'long' } },
       { id: 'u7l3', title: 'Cao và Thấp', emoji: '🦒', activity: 'sortSize', skill: 'So sánh cao – thấp', config: { questions: 6, variant: 'tall' } },
+      { id: 'u7l4', title: 'Tháp Hồng', emoji: '🩷', activity: 'seriation', skill: 'Xếp thứ tự kích thước từ nhỏ đến lớn (Montessori)', config: { questions: 6 } },
     ],
   },
   {
@@ -186,6 +187,21 @@ export const CURRICULUM: Unit[] = [
     lessons: [
       { id: 'u12l1', title: 'Tô số 0 – 4', emoji: '✏️', activity: 'trace', skill: 'Tô theo nét các số 0–4', config: { min: 0, max: 4 } },
       { id: 'u12l2', title: 'Tô số 5 – 9', emoji: '🖍️', activity: 'trace', skill: 'Tô theo nét các số 5–9', config: { min: 5, max: 9 } },
+    ],
+  },
+  {
+    id: 'u13',
+    order: 13,
+    title: 'Montessori nâng cao',
+    subtitle: 'Hạt vàng thập phân, bảng 100, con rắn cộng',
+    emoji: '🟡',
+    color: 'honey',
+    ageBand: 'tien-th',
+    goal: 'Làm quen số đến 100, hàng chục – đơn vị và cộng chuỗi bằng học cụ Montessori.',
+    lessons: [
+      { id: 'u13l1', title: 'Hạt vàng: chục & đơn vị', emoji: '🟡', activity: 'goldenBeads', skill: 'Đọc số hai chữ số qua hạt vàng (10–99)', config: { min: 10, max: 99, questions: 8 } },
+      { id: 'u13l2', title: 'Bảng 100', emoji: '💯', activity: 'hundredBoard', skill: 'Nhận biết vị trí số trên bảng 100', config: { questions: 8 } },
+      { id: 'u13l3', title: 'Con rắn cộng', emoji: '🐍', activity: 'snake', skill: 'Cộng chuỗi thanh hạt (tổng ≤ 18)', config: { max: 18, questions: 8 } },
     ],
   },
 ]

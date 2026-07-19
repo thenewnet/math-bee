@@ -12,21 +12,35 @@ const THEME_ORDER: InterestTheme[] = ['classic', 'robot', 'hero', 'monster']
 export function Onboarding({ onDone }: { onDone: () => void }) {
   const { addProfile } = useStore()
   const [name, setName] = useState('')
-  const [theme, setTheme] = useState<InterestTheme>('classic')
+  const [themes, setThemes] = useState<InterestTheme[]>(['classic'])
   const [avatar, setAvatar] = useState(THEME_AVATARS.classic[0])
   const [band, setBand] = useState<AgeBand>('lon')
   const [montessori, setMontessori] = useState(false)
 
-  const avatars = THEME_AVATARS[theme]
+  const activeThemes = themes.filter((t) => t !== 'classic')
+  const avatarThemes = activeThemes.length ? activeThemes : (['classic'] as InterestTheme[])
+  const avatars = [...new Set(avatarThemes.flatMap((t) => THEME_AVATARS[t]))]
 
-  function chooseTheme(t: InterestTheme) {
-    setTheme(t)
-    setAvatar(THEME_AVATARS[t][0]) // đổi avatar mặc định theo chủ đề
+  function toggleTheme(t: InterestTheme) {
+    setThemes((prev) => {
+      let next: InterestTheme[]
+      if (t === 'classic') next = ['classic']
+      else {
+        const base = prev.filter((x) => x !== 'classic')
+        next = base.includes(t) ? base.filter((x) => x !== t) : [...base, t]
+        if (next.length === 0) next = ['classic']
+      }
+      // đảm bảo avatar thuộc bộ chủ đề mới
+      const at = next.filter((x) => x !== 'classic')
+      const list = (at.length ? at : ['classic']).flatMap((x) => THEME_AVATARS[x as InterestTheme])
+      if (!list.includes(avatar)) setAvatar(list[0])
+      return next
+    })
   }
 
   function submit() {
     unlockAudio()
-    addProfile(name, avatar, band, theme, montessori)
+    addProfile(name, avatar, band, themes, montessori)
     speak(`Xin chào ${name || 'bé'}! Cùng học toán nào!`)
     onDone()
   }
@@ -51,25 +65,35 @@ export function Onboarding({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-extrabold text-ink">Bé thích chủ đề nào?</label>
+        <label className="mb-2 block text-sm font-extrabold text-ink">
+          Bé thích chủ đề nào? <span className="font-bold text-ink/50">(chọn được nhiều)</span>
+        </label>
         <div className="grid grid-cols-2 gap-2">
-          {THEME_ORDER.map((t) => (
-            <button
-              key={t}
-              onClick={() => chooseTheme(t)}
-              className={`flex items-center gap-2 rounded-2xl border-4 p-3 text-left transition ${
-                theme === t ? 'border-honey bg-honey/20' : 'border-white bg-white'
-              }`}
-            >
-              <span className="text-3xl">{INTEREST_THEMES[t].emoji}</span>
-              <div>
-                <div className="text-sm font-extrabold text-ink">{INTEREST_THEMES[t].label}</div>
-                <div className="text-[10px] font-bold leading-tight text-ink/50">
-                  {INTEREST_THEMES[t].desc}
+          {THEME_ORDER.map((t) => {
+            const on = themes.includes(t)
+            return (
+              <button
+                key={t}
+                onClick={() => toggleTheme(t)}
+                className={`relative flex items-center gap-2 rounded-2xl border-4 p-3 text-left transition ${
+                  on ? 'border-honey bg-honey/20' : 'border-white bg-white'
+                }`}
+              >
+                <span className="text-3xl">{INTEREST_THEMES[t].emoji}</span>
+                <div>
+                  <div className="text-sm font-extrabold text-ink">{INTEREST_THEMES[t].label}</div>
+                  <div className="text-[10px] font-bold leading-tight text-ink/50">
+                    {INTEREST_THEMES[t].desc}
+                  </div>
                 </div>
-              </div>
-            </button>
-          ))}
+                {on && (
+                  <span className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-honey text-[11px] text-white">
+                    ✓
+                  </span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
