@@ -267,6 +267,16 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
       )
     }
 
+    case 'oddOne':
+      return (
+        <Panel>
+          <div className="flex flex-col items-center gap-2">
+            <span className="text-6xl anim-bounce">{r.hint}</span>
+            <span className="text-base font-bold text-ink/60">Chọn hình khác biệt bên dưới</span>
+          </div>
+        </Panel>
+      )
+
     default:
       return null
   }

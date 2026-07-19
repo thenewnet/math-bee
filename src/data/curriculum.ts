@@ -313,6 +313,22 @@ export const CURRICULUM: Unit[] = [
       { id: 'u13l3', title: 'Con rắn cộng', emoji: '🐍', activity: 'snake', skill: 'Cộng chuỗi thanh hạt (tổng ≤ 18)', config: { max: 18, questions: 8 } },
     ],
   },
+  {
+    id: 'u20',
+    order: 20,
+    title: 'Toán tư duy — Luyện thi lớp 1',
+    subtitle: 'Nối, tìm khác biệt, quy luật — dạng đề trường chất lượng cao',
+    emoji: '🧠',
+    color: 'berry',
+    ageBand: 'tien-th',
+    goal: 'Rèn quan sát, so sánh, suy luận qua các dạng bài thi vào lớp 1 (nối tương ứng, tìm hình khác biệt, quy luật).',
+    lessons: [
+      { id: 'u20l1', title: 'Nối số với số lượng', emoji: '🔗', activity: 'match', skill: 'Nối chữ số với nhóm có đúng số lượng', config: { questions: 5, variant: 'digitQuantity', max: 5 } },
+      { id: 'u20l2', title: 'Nối cặp số bằng 10', emoji: '🤝', activity: 'match', skill: 'Nối hai số có tổng bằng 10 (bạn của 10)', config: { questions: 5, variant: 'sumTen' } },
+      { id: 'u20l3', title: 'Tìm hình khác biệt', emoji: '🔍', activity: 'oddOne', skill: 'Tìm hình khác nhóm với các hình còn lại', config: { questions: 6 } },
+      { id: 'u20l4', title: 'Tìm quy luật', emoji: '🧩', activity: 'pattern', skill: 'Quan sát và tiếp nối quy luật (ABC)', config: { questions: 6, variant: 'abc' } },
+    ],
+  },
 ]
 
 // Thêm bài "Ôn tập cuối chặng" vào cuối mỗi chặng (trừ chặng tập tô).

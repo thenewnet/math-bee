@@ -1,5 +1,5 @@
-import type { InterestTheme, Lesson, Option, Question } from '../types'
-import { pickFrom, resolveIcons } from './themes'
+import type { InterestTheme, Lesson, MatchPair, Option, Question } from '../types'
+import { pickFrom, resolveIcons, THEMES } from './themes'
 import { CURRICULUM } from '../data/curriculum'
 import { GEO_SOLIDS } from '../components/Solid3D'
 
@@ -581,6 +581,72 @@ function genSeriation(l: Lesson): Question[] {
   return out
 }
 
+// Toán tư duy — "Nối": nối chữ số với nhóm đồ vật, hoặc nối cặp số có tổng 10.
+function genMatch(l: Lesson, themes?: InterestTheme[]): Question[] {
+  const { questions = 5, variant = 'digitQuantity', max = 5, theme } = l.config
+  const icons = resolveIcons(themes, theme)
+  const out: Question[] = []
+  const K = 3 // số cặp mỗi câu (vừa sức trẻ mầm non)
+  for (let i = 0; i < questions; i++) {
+    let pairs: MatchPair[]
+    if (variant === 'sumTen') {
+      // nối hai số cộng lại bằng 10 ("bạn của 10") — luyện tách/gộp 10
+      const bases = shuffle([1, 2, 3, 4]).slice(0, K)
+      pairs = bases.map((a, idx) => ({
+        id: `m${idx}`,
+        left: { kind: 'digit', value: a },
+        right: { kind: 'digit', value: 10 - a },
+      }))
+    } else {
+      // digitQuantity: nối chữ số với nhóm có đúng số lượng
+      const counts = shuffle(Array.from({ length: max }, (_, k) => k + 1)).slice(0, K)
+      const icon = pickFrom(icons)
+      pairs = counts.map((c, idx) => ({
+        id: `m${idx}`,
+        left: { kind: 'digit', value: c },
+        right: { kind: 'objects', icon, count: c },
+      }))
+    }
+    out.push({
+      id: nid(),
+      prompt: variant === 'sumTen' ? 'Nối hai số cộng lại bằng 10' : 'Nối mỗi số với nhóm có đúng số lượng',
+      render: { kind: 'match', pairs },
+      options: [],
+      answer: 'done',
+    })
+  }
+  return out
+}
+
+// Toán tư duy — "Tìm hình khác biệt": 3 hình cùng nhóm + 1 hình khác nhóm.
+function genOddOne(l: Lesson): Question[] {
+  const { questions = 6 } = l.config
+  const groups = Object.values(THEMES)
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const [gA, gB] = shuffle(groups).slice(0, 2)
+    const same = shuffle(gA).slice(0, 3)
+    let odd = pickFrom(gB)
+    let guard = 0
+    while (same.includes(odd) && guard < 20) {
+      odd = pickFrom(gB)
+      guard++
+    }
+    const options: Option[] = shuffle(
+      [...same, odd].map((e, idx) => ({ id: `o${idx}_${e}`, emoji: e })),
+    )
+    const ans = options.find((o) => o.emoji === odd)!
+    out.push({
+      id: nid(),
+      prompt: 'Tìm hình KHÁC với các hình còn lại',
+      render: { kind: 'oddOne', hint: '🔍' },
+      options,
+      answer: ans.id,
+    })
+  }
+  return out
+}
+
 // Ôn tập cuối chặng: trộn các câu hỏi từ những bài trong cùng chặng.
 function genReview(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { questions = 8 } = l.config
@@ -640,6 +706,10 @@ export function generateQuestions(lesson: Lesson, themes?: InterestTheme[]): Que
       return genSnake(lesson)
     case 'seriation':
       return genSeriation(lesson)
+    case 'match':
+      return genMatch(lesson, themes)
+    case 'oddOne':
+      return genOddOne(lesson)
     case 'review':
       return genReview(lesson, themes)
     default:

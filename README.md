@@ -11,10 +11,12 @@ trên điện thoại / máy tính bảng (PWA).
 ## ✨ Tính năng
 
 - **Hồ sơ nhiều bé**: mỗi bé có tên, nhân vật và độ tuổi riêng; tiến độ lưu tách biệt.
-- **Lộ trình 19 chặng** tăng dần độ khó, mở khóa tuần tự (bài trước xong mới mở bài sau).
-- **21 dạng bài tương tác**: đếm (tới 20), nhận biết chữ số, so sánh nhiều/ít, số thứ tự,
+- **Lộ trình 20 chặng** tăng dần độ khó, mở khóa tuần tự (bài trước xong mới mở bài sau).
+- **23 dạng bài tương tác**: đếm (tới 20), nhận biết chữ số, so sánh nhiều/ít, số thứ tự,
   số liền trước–liền sau, đếm cách 2/5, đếm lùi, quy luật, hình học 2D/3D, phương hướng,
-  so sánh kích thước, gộp–tách, cộng, trừ trong phạm vi 10 và học cụ Montessori…
+  so sánh kích thước, gộp–tách, cộng, trừ trong phạm vi 10, học cụ Montessori…
+- **Nhiều kiểu tương tác**: chọn đáp án, tô theo nét số, xếp tháp, **nối tương ứng (số ↔ lượng, cặp số bằng 10)**,
+  **tìm hình khác biệt** — bám dạng đề thi vào lớp 1 các trường chất lượng cao.
 - **Giọng đọc tiếng Việt** (Text-to-Speech) đọc câu hỏi cho bé chưa biết chữ.
 - **Phản hồi tức thì**: hiệu ứng âm thanh, pháo giấy, khen ngợi, cho làm lại khi sai (không phạt).
 - **Thưởng sao & huy hiệu**: động lực học tập, xem thành tích riêng cho từng bé.
@@ -46,6 +48,7 @@ Trật tự chặng = trật tự học & mở khoá, **mỗi chặng đặt nga
 | 17 | Khối hình học 3 chiều | E · Bổ trợ Montessori |
 | 18 | Tập tô chữ số 0–9 | E · Bổ trợ Montessori |
 | 19 | Montessori nâng cao (hạt vàng, bảng 100) | E · Bổ trợ Montessori |
+| 20 | Toán tư duy — Luyện thi lớp 1 (nối, tìm khác biệt, quy luật) | E · Mở rộng / tiền tiểu học |
 
 > Mỗi chặng tự động có thêm bài **"Ôn tập chặng"** tổng hợp các dạng bài trong chặng.
 

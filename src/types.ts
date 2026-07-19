@@ -46,6 +46,8 @@ export type ActivityType =
   | 'hundredBoard' // bảng 100
   | 'snake' // trò "con rắn cộng" (cộng chuỗi thanh hạt)
   | 'seriation' // xếp thứ tự kích thước kiểu Tháp Hồng
+  | 'match' // nối tương ứng (số ↔ lượng, cặp số bằng 10…) — toán tư duy
+  | 'oddOne' // tìm hình khác biệt (khoanh hình không giống) — toán tư duy
   | 'review' // ôn tập cuối chặng (tổng hợp các dạng bài trong chặng)
 
 export interface LessonConfig {
@@ -136,6 +138,20 @@ export type QuestionRender =
   | { kind: 'seriation'; sizes: number[] }
   | { kind: 'digit'; value: number }
   | { kind: 'sequence'; sequence: (number | null)[] }
+  | { kind: 'match'; pairs: MatchPair[] } // nối: mỗi ô trái nối đúng ô phải
+  | { kind: 'oddOne'; hint: string } // tìm hình khác biệt (4 lựa chọn là các emoji)
+
+// Một ô trong bài "Nối": có thể là chữ số, nhóm đồ vật, hoặc emoji.
+export type MatchCell =
+  | { kind: 'digit'; value: number }
+  | { kind: 'objects'; icon: string; count: number }
+  | { kind: 'emoji'; char: string }
+
+export interface MatchPair {
+  id: string
+  left: MatchCell
+  right: MatchCell
+}
 
 export interface Option {
   id: string
