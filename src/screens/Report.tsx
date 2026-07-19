@@ -1,9 +1,12 @@
 import { CURRICULUM } from '../data/curriculum'
 import { AGE_BANDS } from '../types'
 import { useStore } from '../store/store'
+import { abilityLevel, activityStats } from '../engine/adaptive'
 
 export function Report({ onBack }: { onBack: () => void }) {
-  const { active, statFor } = useStore()
+  const { active, stats, statFor } = useStore()
+  const ability = abilityLevel(stats)
+  const weakSkills = activityStats(stats).slice(0, 4)
 
   // Tổng hợp toàn bộ
   let doneAll = 0
@@ -53,6 +56,55 @@ export function Report({ onBack }: { onBack: () => void }) {
         <div className="mb-5 rounded-2xl bg-white p-4 text-center text-sm font-bold text-ink/60 shadow">
           Bé chưa làm bài nào. Hãy cùng bé bắt đầu học nhé! 🐝
         </div>
+      )}
+
+      {/* mức năng lực + kỹ năng cần luyện thêm */}
+      {totalAll > 0 && (
+        <>
+          <div className="mb-4 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-grape to-berry p-4 text-white shadow">
+            <span className="text-4xl">{ability.emoji}</span>
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-wide opacity-90">
+                Mức năng lực
+              </div>
+              <div className="text-xl font-extrabold">{ability.label}</div>
+              <div className="text-xs font-bold opacity-90">
+                Trả lời đúng {ability.accuracy !== null ? Math.round(ability.accuracy * 100) : 0}% ngay lần đầu
+              </div>
+            </div>
+          </div>
+
+          {weakSkills.length > 0 && (
+            <div className="mb-5 rounded-3xl bg-white p-4 shadow">
+              <h2 className="mb-2 text-base font-extrabold text-ink">🧩 Kỹ năng — nên luyện thêm</h2>
+              <div className="flex flex-col gap-2">
+                {weakSkills.map((s) => {
+                  const pct = Math.round(s.accuracy * 100)
+                  const weak = pct < 70
+                  return (
+                    <div key={s.activity} className="flex items-center gap-2">
+                      <span className="w-40 shrink-0 truncate text-sm font-bold text-ink">
+                        {s.label}
+                      </span>
+                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-black/5">
+                        <div
+                          className={`h-full rounded-full ${weak ? 'bg-coral' : 'bg-grass'}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className={`w-10 text-right text-xs font-extrabold ${weak ? 'text-coral' : 'text-grass-dark'}`}>
+                        {pct}%
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+              <p className="mt-2 text-[11px] font-semibold text-ink/40">
+                Mục màu đỏ (dưới 70%) là phần bé còn yếu — dùng "Luyện tập thích ứng" ở trang chính để ôn.
+              </p>
+            </div>
+          )}
+        </>
       )}
 
       {/* theo từng chặng */}

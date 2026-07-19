@@ -19,6 +19,7 @@ export function Settings({
   const { profiles, activeId, active, setActive, updateProfile, removeProfile, settings, setSettings } =
     useStore()
   const [confirmDel, setConfirmDel] = useState<string | null>(null)
+  const [pinInput, setPinInput] = useState('')
 
   return (
     <div className="mx-auto max-w-lg p-4 pb-10">
@@ -29,8 +30,47 @@ export function Settings({
         >
           ⬅️
         </button>
-        <h1 className="text-2xl font-extrabold text-honey-dark">Cài đặt</h1>
+        <h1 className="text-2xl font-extrabold text-honey-dark">Khu quản trị</h1>
       </div>
+
+      {/* Mã PIN bảo vệ */}
+      <section className="mb-5 rounded-3xl bg-white p-4 shadow">
+        <h2 className="mb-2 text-base font-extrabold text-ink">🔒 Mã PIN khu quản trị</h2>
+        <p className="mb-3 text-xs font-bold text-ink/50">
+          {settings.pin
+            ? 'Đang bảo vệ — bé sẽ không tự vào được khu này.'
+            : 'Chưa đặt PIN. Đặt mã 4 số để chỉ phụ huynh vào được.'}
+        </p>
+        <div className="flex items-center gap-2">
+          <input
+            value={pinInput}
+            onChange={(e) => setPinInput(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            inputMode="numeric"
+            placeholder="Nhập 4 số"
+            className="w-32 rounded-xl border-4 border-honey/40 bg-white px-3 py-2 text-center text-lg font-extrabold tracking-widest text-ink outline-none focus:border-honey"
+          />
+          <button
+            onClick={() => {
+              if (pinInput.length === 4) {
+                setSettings({ pin: pinInput })
+                setPinInput('')
+              }
+            }}
+            disabled={pinInput.length !== 4}
+            className="rounded-xl bg-honey px-4 py-2 text-sm font-extrabold text-white disabled:opacity-40"
+          >
+            {settings.pin ? 'Đổi PIN' : 'Đặt PIN'}
+          </button>
+          {settings.pin && (
+            <button
+              onClick={() => setSettings({ pin: undefined })}
+              className="rounded-xl bg-black/10 px-3 py-2 text-sm font-extrabold text-ink/70"
+            >
+              Bỏ PIN
+            </button>
+          )}
+        </div>
+      </section>
 
       {/* Báo cáo cho phụ huynh */}
       <button

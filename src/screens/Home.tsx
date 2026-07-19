@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import type { Lesson, Unit } from '../types'
+import type { Lesson, Question, Unit } from '../types'
 import { AGE_BANDS, INTEREST_THEMES, profileThemes } from '../types'
 import { CURRICULUM, ALL_LESSONS } from '../data/curriculum'
 import { useStore } from '../store/store'
+import { recommend, buildAdaptiveQuestions } from '../engine/adaptive'
 import { Stars } from '../components/Stars'
 import { BeeSvg } from '../components/Mascot'
 import { speak } from '../audio/sound'
@@ -18,14 +19,16 @@ const COLOR: Record<string, { grad: string; soft: string; text: string; ring: st
 
 export function Home({
   onOpenLesson,
+  onStartPractice,
   onOpenSettings,
   onOpenRewards,
 }: {
   onOpenLesson: (lesson: Lesson) => void
+  onStartPractice: (questions: Question[]) => void
   onOpenSettings: () => void
   onOpenRewards: () => void
 }) {
-  const { active, starsFor, totalStars } = useStore()
+  const { active, stats, starsFor, totalStars } = useStore()
 
   // Mở khoá tuyến tính: bài đầu luôn mở; bài sau mở khi bài trước đã hoàn thành.
   const unlocked = new Set<string>()
@@ -33,6 +36,12 @@ export function Home({
     if (i === 0 || starsFor(ALL_LESSONS[i - 1].id) > 0) unlocked.add(ALL_LESSONS[i].id)
   }
   const doneCount = ALL_LESSONS.filter((l) => starsFor(l.id) > 0).length
+
+  // Lộ trình thích ứng theo khả năng của bé
+  const themes = active ? profileThemes(active) : undefined
+  const rec = recommend(stats, unlocked)
+  const unlockedLessons = ALL_LESSONS.filter((l) => unlocked.has(l.id))
+  const runPractice = () => onStartPractice(buildAdaptiveQuestions(stats, unlockedLessons, themes))
 
   return (
     <div className="mx-auto max-w-lg pb-8">
@@ -93,6 +102,52 @@ export function Home({
         </div>
       </div>
 
+      {/* Gợi ý thích ứng theo khả năng của bé */}
+      <div className="mx-4 mb-4 rounded-3xl bg-white p-4 shadow-md">
+        <div className="mb-2 flex items-center gap-2">
+          <span className="text-xl">🧭</span>
+          <h3 className="text-sm font-extrabold uppercase tracking-wide text-ink/60">
+            Gợi ý cho bé hôm nay
+          </h3>
+        </div>
+        {rec.type === 'review' ? (
+          <RecCard
+            emoji="🔁"
+            title={`Ôn lại: ${rec.lesson.title}`}
+            sub={`Bé làm đúng ${Math.round(rec.accuracy * 100)}% — luyện thêm cho vững nhé`}
+            action="Ôn ngay"
+            color="from-berry to-grape"
+            onClick={() => onOpenLesson(rec.lesson)}
+          />
+        ) : rec.type === 'learn' ? (
+          <RecCard
+            emoji={rec.lesson.emoji}
+            title={`Học tiếp: ${rec.lesson.title}`}
+            sub="Bài tiếp theo trong lộ trình của bé"
+            action="Học ngay"
+            color="from-honey to-honey-dark"
+            onClick={() => onOpenLesson(rec.lesson)}
+          />
+        ) : (
+          <RecCard
+            emoji="🎯"
+            title="Luyện tập thích ứng"
+            sub="Bé đã học tốt! Ôn tổng hợp theo khả năng nào"
+            action="Bắt đầu"
+            color="from-grass to-grass-dark"
+            onClick={runPractice}
+          />
+        )}
+        {rec.type !== 'practice' && (
+          <button
+            onClick={runPractice}
+            className="mt-2 w-full rounded-2xl border-2 border-dashed border-grass/50 py-2.5 text-sm font-extrabold text-grass-dark active:scale-95"
+          >
+            🎯 Luyện tập thích ứng (ôn phần yếu)
+          </button>
+        )}
+      </div>
+
       {/* curriculum path — sắp theo: Cần học tiếp -> Đã hoàn thành -> Chặng tiếp theo */}
       <div className="flex flex-col gap-5 px-4">
         {(() => {
@@ -146,6 +201,40 @@ export function Home({
         Giáo trình bám khung "Làm quen với Toán" — Chương trình GD Mầm non
       </p>
     </div>
+  )
+}
+
+function RecCard({
+  emoji,
+  title,
+  sub,
+  action,
+  color,
+  onClick,
+}: {
+  emoji: string
+  title: string
+  sub: string
+  action: string
+  color: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex w-full items-center gap-3 rounded-2xl bg-gradient-to-r ${color} p-3 text-left text-white shadow active:scale-95`}
+    >
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/25 text-2xl">
+        {emoji}
+      </span>
+      <div className="flex-1">
+        <div className="text-base font-extrabold leading-tight">{title}</div>
+        <div className="text-xs font-bold opacity-90">{sub}</div>
+      </div>
+      <span className="shrink-0 rounded-full bg-white/25 px-3 py-1.5 text-xs font-extrabold">
+        {action} ➜
+      </span>
+    </button>
   )
 }
 
