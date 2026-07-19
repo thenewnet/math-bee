@@ -233,9 +233,10 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
     case 'spatial': {
       const [emoji, pos] = r.scene.split('|')
       if (r.ask === 'time') {
+        // cảnh thời gian có dạng "time|<emoji>" nên emoji nằm ở phần sau (pos)
         return (
           <Panel>
-            <span className="anim-pop"><Emoji char={emoji} size={120} /></span>
+            <span className="anim-pop"><Emoji char={pos} size={130} /></span>
           </Panel>
         )
       }
