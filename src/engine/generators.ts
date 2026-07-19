@@ -1,4 +1,4 @@
-import type { InterestTheme, Lesson, MatchPair, Option, Question } from '../types'
+import type { InterestTheme, Lesson, MatchPair, Option, Question, SortBin, SortItem } from '../types'
 import { pickFrom, resolveIcons, THEMES } from './themes'
 import { CURRICULUM } from '../data/curriculum'
 import { GEO_SOLIDS } from '../components/Solid3D'
@@ -647,6 +647,115 @@ function genOddOne(l: Lesson): Question[] {
   return out
 }
 
+// Toán tư duy — "Ma trận quy luật": lưới 2×3 lặp quy luật, chọn ô còn thiếu.
+function genMatrix(l: Lesson): Question[] {
+  const { questions = 6 } = l.config
+  const symbolSets = [
+    ['🔴', '🔵', '🟡'],
+    ['🟥', '🟩', '🟦'],
+    ['⭐', '❤️', '🔶'],
+    ['🍎', '🍌', '🍇'],
+  ]
+  const cols = 3
+  const rows = 2
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const base = shuffle(symbolSets[i % symbolSets.length]) // 3 ký hiệu khác nhau
+    const grid: string[] = []
+    for (let k = 0; k < cols * rows; k++) grid.push(base[k % base.length])
+    const hideIdx = rint(0, cols * rows - 1)
+    const answerSym = grid[hideIdx]
+    const cells: (string | null)[] = grid.map((s, idx) => (idx === hideIdx ? null : s))
+    const options: Option[] = shuffle(base).map((e) => ({ id: `p_${e}`, emoji: e }))
+    out.push({
+      id: nid(),
+      prompt: 'Ô còn thiếu là hình nào?',
+      render: { kind: 'matrix', cells, cols },
+      options,
+      answer: `p_${answerSym}`,
+    })
+  }
+  return out
+}
+
+// Toán tư duy — "Đếm hình theo loại": có bao nhiêu hình tam giác?
+function genShapeCount(l: Lesson): Question[] {
+  const { questions = 6, min = 4, max = 7 } = l.config
+  const shapeIds = SHAPES.map((s) => s.id)
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const total = rint(min, max)
+    const target = shapeIds[i % shapeIds.length]
+    const targetCount = rint(1, Math.max(1, total - 1)) // luôn có ít nhất 1 hình khác
+    const shapes: string[] = []
+    for (let k = 0; k < targetCount; k++) shapes.push(target)
+    const others = shapeIds.filter((s) => s !== target)
+    for (let k = targetCount; k < total; k++) shapes.push(others[rint(0, others.length - 1)])
+    const targetName = SHAPES.find((s) => s.id === target)!.name
+    out.push({
+      id: nid(),
+      prompt: `Có bao nhiêu ${targetName}?`,
+      render: { kind: 'shapeCount', shapes: shuffle(shapes), target },
+      options: digitOptions(targetCount, 1, total),
+      answer: `d${targetCount}`,
+    })
+  }
+  return out
+}
+
+// Tương tác — "Vẽ thêm cho đủ": bắt đầu có `current`, thêm cho đủ `target`.
+function genAddToCount(l: Lesson, themes?: InterestTheme[]): Question[] {
+  const { questions = 6, max = 8, theme } = l.config
+  const icons = resolveIcons(themes, theme)
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const target = rint(3, max)
+    const current = rint(1, target - 1)
+    out.push({
+      id: nid(),
+      prompt: `Thêm cho đủ ${target}`,
+      render: { kind: 'addToCount', icon: pickFrom(icons), current, target },
+      options: [],
+      answer: 'done',
+    })
+  }
+  return out
+}
+
+// Tương tác — "Phân loại": bỏ mỗi đồ vật vào đúng nhóm (2 nhóm).
+function genSort(l: Lesson): Question[] {
+  const { questions = 5 } = l.config
+  const CATS = [
+    { id: 'fruit', label: 'Hoa quả', emoji: '🍎', items: THEMES.fruit },
+    { id: 'animal', label: 'Con vật', emoji: '🐶', items: THEMES.animal },
+    { id: 'sea', label: 'Dưới biển', emoji: '🐟', items: THEMES.sea },
+    { id: 'toy', label: 'Đồ chơi', emoji: '🧸', items: THEMES.toy },
+  ]
+  const out: Question[] = []
+  for (let i = 0; i < questions; i++) {
+    const [ca, cb] = shuffle(CATS).slice(0, 2)
+    const bins: SortBin[] = [
+      { id: ca.id, label: ca.label, emoji: ca.emoji },
+      { id: cb.id, label: cb.label, emoji: cb.emoji },
+    ]
+    // tránh trùng emoji giữa 2 nhóm để không gây nhập nhằng
+    const aItems = shuffle(ca.items.filter((e) => !cb.items.includes(e))).slice(0, 3)
+    const bItems = shuffle(cb.items.filter((e) => !ca.items.includes(e) && !aItems.includes(e))).slice(0, 3)
+    const items: SortItem[] = shuffle([
+      ...aItems.map((e, k) => ({ id: `a${k}_${e}`, emoji: e, bin: ca.id })),
+      ...bItems.map((e, k) => ({ id: `b${k}_${e}`, emoji: e, bin: cb.id })),
+    ])
+    out.push({
+      id: nid(),
+      prompt: 'Phân loại: bỏ mỗi hình vào đúng nhóm',
+      render: { kind: 'sort', items, bins },
+      options: [],
+      answer: 'done',
+    })
+  }
+  return out
+}
+
 // Ôn tập cuối chặng: trộn các câu hỏi từ những bài trong cùng chặng.
 function genReview(l: Lesson, themes?: InterestTheme[]): Question[] {
   const { questions = 8 } = l.config
@@ -710,6 +819,14 @@ export function generateQuestions(lesson: Lesson, themes?: InterestTheme[]): Que
       return genMatch(lesson, themes)
     case 'oddOne':
       return genOddOne(lesson)
+    case 'matrix':
+      return genMatrix(lesson)
+    case 'shapeCount':
+      return genShapeCount(lesson)
+    case 'addToCount':
+      return genAddToCount(lesson, themes)
+    case 'sort':
+      return genSort(lesson)
     case 'review':
       return genReview(lesson, themes)
     default:

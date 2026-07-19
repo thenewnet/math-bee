@@ -7,6 +7,8 @@ import { OptionButton } from '../components/OptionButton'
 import { TraceNumber } from '../components/TraceNumber'
 import { PinkTower } from '../components/PinkTower'
 import { MatchPairs } from '../components/MatchPairs'
+import { AddToCount } from '../components/AddToCount'
+import { SortBins } from '../components/SortBins'
 import { Stars } from '../components/Stars'
 import { Mascot } from '../components/Mascot'
 import { Confetti } from '../components/Confetti'
@@ -249,8 +251,12 @@ export function LessonPlayer({
         <span className="text-xl">🔊</span>
       </button>
 
-      {q.render.kind === 'trace' || q.render.kind === 'seriation' || q.render.kind === 'match' ? (
-        /* Bài tương tác trực tiếp (tô số / xếp tháp / nối) — không có lựa chọn */
+      {q.render.kind === 'trace' ||
+      q.render.kind === 'seriation' ||
+      q.render.kind === 'match' ||
+      q.render.kind === 'addToCount' ||
+      q.render.kind === 'sort' ? (
+        /* Bài tương tác trực tiếp (tô số / xếp tháp / nối / thêm cho đủ / phân loại) */
         <div className="mt-2 flex flex-col items-center">
           {q.render.kind === 'trace' ? (
             <TraceNumber
@@ -268,10 +274,29 @@ export function LessonPlayer({
                 if (!solved) choose(q.answer)
               }}
             />
-          ) : (
+          ) : q.render.kind === 'match' ? (
             <MatchPairs
               key={q.id}
               pairs={q.render.pairs}
+              onComplete={() => {
+                if (!solved) choose(q.answer)
+              }}
+            />
+          ) : q.render.kind === 'addToCount' ? (
+            <AddToCount
+              key={q.id}
+              icon={q.render.icon}
+              current={q.render.current}
+              target={q.render.target}
+              onComplete={() => {
+                if (!solved) choose(q.answer)
+              }}
+            />
+          ) : (
+            <SortBins
+              key={q.id}
+              items={q.render.items}
+              bins={q.render.bins}
               onComplete={() => {
                 if (!solved) choose(q.answer)
               }}

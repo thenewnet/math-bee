@@ -48,6 +48,10 @@ export type ActivityType =
   | 'seriation' // xếp thứ tự kích thước kiểu Tháp Hồng
   | 'match' // nối tương ứng (số ↔ lượng, cặp số bằng 10…) — toán tư duy
   | 'oddOne' // tìm hình khác biệt (khoanh hình không giống) — toán tư duy
+  | 'matrix' // ma trận quy luật: chọn ô còn thiếu — toán tư duy
+  | 'shapeCount' // đếm hình theo loại (có mấy hình tam giác?) — toán tư duy
+  | 'addToCount' // vẽ thêm cho đủ số lượng (chạm để thêm) — tương tác
+  | 'sort' // phân loại đồ vật vào đúng nhóm (chạm để đặt) — tương tác
   | 'review' // ôn tập cuối chặng (tổng hợp các dạng bài trong chặng)
 
 export interface LessonConfig {
@@ -140,6 +144,10 @@ export type QuestionRender =
   | { kind: 'sequence'; sequence: (number | null)[] }
   | { kind: 'match'; pairs: MatchPair[] } // nối: mỗi ô trái nối đúng ô phải
   | { kind: 'oddOne'; hint: string } // tìm hình khác biệt (4 lựa chọn là các emoji)
+  | { kind: 'matrix'; cells: (string | null)[]; cols: number } // lưới quy luật, ô null = "?"
+  | { kind: 'shapeCount'; shapes: string[]; target: string } // đếm số hình `target` trong `shapes`
+  | { kind: 'addToCount'; icon: string; current: number; target: number } // vẽ thêm cho đủ
+  | { kind: 'sort'; items: SortItem[]; bins: SortBin[] } // phân loại vào nhóm
 
 // Một ô trong bài "Nối": có thể là chữ số, nhóm đồ vật, hoặc emoji.
 export type MatchCell =
@@ -151,6 +159,20 @@ export interface MatchPair {
   id: string
   left: MatchCell
   right: MatchCell
+}
+
+// Một đồ vật trong bài "Phân loại": emoji + nhóm đúng của nó.
+export interface SortItem {
+  id: string
+  emoji: string
+  bin: string // id nhóm đúng
+}
+
+// Một nhóm (rổ) trong bài "Phân loại".
+export interface SortBin {
+  id: string
+  label: string
+  emoji: string
 }
 
 export interface Option {

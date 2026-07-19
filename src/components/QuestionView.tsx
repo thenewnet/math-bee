@@ -267,6 +267,42 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
       )
     }
 
+    case 'matrix':
+      return (
+        <Panel>
+          <div
+            className="grid gap-2"
+            style={{ gridTemplateColumns: `repeat(${r.cols}, minmax(0, 1fr))` }}
+          >
+            {r.cells.map((c, i) =>
+              c === null ? (
+                <span
+                  key={i}
+                  className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-dashed border-honey text-3xl font-extrabold text-honey-dark anim-bounce"
+                >
+                  ?
+                </span>
+              ) : (
+                <span key={i} className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-sm">
+                  <Emoji char={c} size={44} />
+                </span>
+              ),
+            )}
+          </div>
+        </Panel>
+      )
+
+    case 'shapeCount':
+      return (
+        <Panel>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            {r.shapes.map((s, i) => (
+              <Shape key={i} kind={s} size={56} />
+            ))}
+          </div>
+        </Panel>
+      )
+
     case 'oddOne':
       return (
         <Panel>

@@ -94,6 +94,7 @@ export const CURRICULUM: Unit[] = [
       { id: 'u5l1', title: 'Tiếp theo là gì? (AB)', emoji: '🔁', activity: 'pattern', skill: 'Tiếp nối quy luật AB', config: { questions: 6, variant: 'ab' } },
       { id: 'u5l2', title: 'Quy luật AABB', emoji: '🔂', activity: 'pattern', skill: 'Tiếp nối quy luật AABB', config: { questions: 6, variant: 'aabb' } },
       { id: 'u5l3', title: 'Quy luật ABC', emoji: '🎨', activity: 'pattern', skill: 'Tiếp nối quy luật ABC', config: { questions: 6, variant: 'abc' } },
+      { id: 'u5l4', title: 'Phân loại đồ vật', emoji: '🧺', activity: 'sort', skill: 'Phân loại đồ vật vào đúng nhóm theo dấu hiệu', config: { questions: 5 } },
     ],
   },
   {
@@ -158,6 +159,7 @@ export const CURRICULUM: Unit[] = [
       { id: 'u16l1', title: 'Nhiều hơn (trong 10)', emoji: '➕', activity: 'compareQuantity', skill: 'Tìm nhóm nhiều hơn (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'more' } },
       { id: 'u16l2', title: 'Ít hơn (trong 10)', emoji: '➖', activity: 'compareQuantity', skill: 'Tìm nhóm ít hơn (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'less' } },
       { id: 'u16l3', title: 'Bằng nhau chưa?', emoji: '🟰', activity: 'compareQuantity', skill: 'Nhận biết hai nhóm bằng nhau (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'equal' } },
+      { id: 'u16l4', title: 'Thêm cho đủ', emoji: '➕', activity: 'addToCount', skill: 'Thêm cho đủ số lượng yêu cầu (tạo sự bằng nhau, ≤10)', config: { questions: 6, max: 10 } },
     ],
   },
   {
@@ -327,6 +329,8 @@ export const CURRICULUM: Unit[] = [
       { id: 'u20l2', title: 'Nối cặp số bằng 10', emoji: '🤝', activity: 'match', skill: 'Nối hai số có tổng bằng 10 (bạn của 10)', config: { questions: 5, variant: 'sumTen' } },
       { id: 'u20l3', title: 'Tìm hình khác biệt', emoji: '🔍', activity: 'oddOne', skill: 'Tìm hình khác nhóm với các hình còn lại', config: { questions: 6 } },
       { id: 'u20l4', title: 'Tìm quy luật', emoji: '🧩', activity: 'pattern', skill: 'Quan sát và tiếp nối quy luật (ABC)', config: { questions: 6, variant: 'abc' } },
+      { id: 'u20l5', title: 'Ô còn thiếu (ma trận)', emoji: '🔲', activity: 'matrix', skill: 'Quan sát lưới theo quy luật, chọn ô còn thiếu', config: { questions: 6 } },
+      { id: 'u20l6', title: 'Đếm hình', emoji: '🔺', activity: 'shapeCount', skill: 'Đếm số hình theo loại (đếm hình tổng hợp)', config: { questions: 6, min: 4, max: 7 } },
     ],
   },
 ]
