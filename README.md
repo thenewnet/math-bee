@@ -20,29 +20,32 @@ trên điện thoại / máy tính bảng (PWA).
 - **Thưởng sao & huy hiệu**: động lực học tập, xem thành tích riêng cho từng bé.
 - **Hoạt động offline** (PWA), lưu dữ liệu ngay trên thiết bị, không cần đăng nhập.
 
-## 🧭 Lộ trình học (19 chặng)
+## 🧭 Lộ trình học (19 chặng, theo 5 giai đoạn phát triển)
 
-| Chặng | Nội dung | Độ tuổi |
+Trật tự chặng = trật tự học & mở khoá, **mỗi chặng đặt ngay sau kỹ năng tiên quyết**
+(chi tiết cơ sở học thuật tại [`docs/GIAO-TRINH.md`](docs/GIAO-TRINH.md)).
+
+| Chặng | Nội dung | Giai đoạn / Độ tuổi |
 |------|----------|---------|
-| 1 | Bé đếm 1–5 | 3–4 |
-| 2 | Nhiều hơn – Ít hơn | 3–4 |
-| 3 | Thế giới hình khối | 3–4 |
-| 4 | Đếm đến 10 & số thứ tự | 4–5 |
-| 5 | Quy luật & phân loại | 4–5 |
-| 6 | Phương hướng & thời gian | 4–5 |
-| 7 | Bé đo lường | 4–5 |
-| 8 | Gộp – Tách trong 10 | 5–6 |
-| 9 | Phép cộng trong 10 | Tiền tiểu học |
-| 10 | Phép trừ trong 10 | Tiền tiểu học |
-| 11 | Khối hình học 3 chiều | Tiền tiểu học |
-| 12 | Tập tô chữ số (Montessori) | 5–6 |
-| 13 | Montessori nâng cao (hạt vàng, bảng 100) | Tiền tiểu học |
-| 14 | Đếm đến 20 & số liền trước–sau | Tiền tiểu học |
-| 15 | Đếm cách 2/5 & đếm lùi | Tiền tiểu học |
-| 16 | So sánh trong 10 | 5–6 |
-| 17 | Bé cộng thành thạo | Tiền tiểu học |
-| 18 | Bé trừ thành thạo | Tiền tiểu học |
-| 19 | Gộp – Tách nâng cao (tách của 6, của 10) | 5–6 |
+| 1 | Bé đếm 1–5 | A · Mẫu giáo bé 3–4 |
+| 2 | Nhiều hơn – Ít hơn | A · 3–4 |
+| 3 | Thế giới hình khối (2D) | A · 3–4 |
+| 4 | Đếm đến 10 & số thứ tự | B · Mẫu giáo nhỡ 4–5 |
+| 5 | Quy luật & phân loại | B · 4–5 |
+| 6 | Phương hướng & thời gian | B · 4–5 |
+| 7 | Bé đo lường | B · 4–5 |
+| 8 | Đếm đến 20 & số liền trước–sau | C · Mẫu giáo lớn 5–6 |
+| 9 | So sánh trong 10 | C · 5–6 |
+| 10 | Gộp – Tách trong 10 | C · 5–6 |
+| 11 | Gộp – Tách nâng cao (tách của 6, của 10) | C · 5–6 |
+| 12 | Phép cộng trong 10 | D · Tiền tiểu học |
+| 13 | Bé cộng thành thạo | D · Tiền tiểu học |
+| 14 | Phép trừ trong 10 | D · Tiền tiểu học |
+| 15 | Bé trừ thành thạo | D · Tiền tiểu học |
+| 16 | Đếm cách 2/5 & đếm lùi | D · Tiền tiểu học |
+| 17 | Khối hình học 3 chiều | E · Bổ trợ Montessori |
+| 18 | Tập tô chữ số 0–9 | E · Bổ trợ Montessori |
+| 19 | Montessori nâng cao (hạt vàng, bảng 100) | E · Bổ trợ Montessori |
 
 > Mỗi chặng tự động có thêm bài **"Ôn tập chặng"** tổng hợp các dạng bài trong chặng.
 

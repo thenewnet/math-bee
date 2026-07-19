@@ -1,12 +1,22 @@
 import type { Unit } from '../types'
 
 // ---------------------------------------------------------------------------
-// GIÁO TRÌNH LÀM QUEN TOÁN — 10 CHẶNG (xem docs/GIAO-TRINH.md)
-// Bám khung "Làm quen với một số khái niệm sơ đẳng về toán" (CT GDMN)
-// và mạch số học lớp 1 (phạm vi 10) cho giai đoạn tiền tiểu học.
+// GIÁO TRÌNH LÀM QUEN TOÁN — LỘ TRÌNH KHOA HỌC THEO ĐỘ TUỔI (xem docs/GIAO-TRINH.md)
+// Bám khung "Làm quen với một số khái niệm sơ đẳng về toán" (CT GDMN) và mạch
+// số học lớp 1 (phạm vi 10–20) cho giai đoạn tiền tiểu học.
+//
+// Trật tự các chặng = trật tự HỌC & MỞ KHOÁ (theo thứ tự mảng này). Được sắp xếp
+// theo 5 giai đoạn phát triển, mỗi chặng mới đặt NGAY SAU kỹ năng tiên quyết:
+//
+//   A. Mẫu giáo bé  (3–4):  1 Đếm 1–5 · 2 Nhiều–Ít · 3 Hình 2D
+//   B. Mẫu giáo nhỡ (4–5):  4 Đếm đến 10 · 5 Quy luật · 6 Phương hướng · 7 Đo lường
+//   C. Mẫu giáo lớn (5–6):  8 Đếm đến 20 · 9 So sánh trong 10 · 10 Gộp–Tách · 11 Gộp–Tách nâng cao
+//   D. Tiền tiểu học:       12 Cộng · 13 Cộng thành thạo · 14 Trừ · 15 Trừ thành thạo · 16 Đếm cách/lùi
+//   E. Bổ trợ Montessori:   17 Khối 3D · 18 Tập tô số · 19 Hạt vàng & Bảng 100
 // ---------------------------------------------------------------------------
 
 export const CURRICULUM: Unit[] = [
+  // ===================== A. MẪU GIÁO BÉ (3–4 tuổi) =====================
   {
     id: 'u1',
     order: 1,
@@ -53,6 +63,8 @@ export const CURRICULUM: Unit[] = [
       { id: 'u3l3', title: 'Tìm đúng hình', emoji: '🔎', activity: 'shape', skill: 'Phân biệt 4 hình cơ bản', config: { questions: 8, variant: 'all' } },
     ],
   },
+
+  // ===================== B. MẪU GIÁO NHỠ (4–5 tuổi) =====================
   {
     id: 'u4',
     order: 4,
@@ -115,9 +127,42 @@ export const CURRICULUM: Unit[] = [
       { id: 'u7l4', title: 'Tháp Hồng', emoji: '🩷', activity: 'seriation', skill: 'Xếp thứ tự kích thước từ nhỏ đến lớn (Montessori)', config: { questions: 6 } },
     ],
   },
+
+  // ===================== C. MẪU GIÁO LỚN (5–6 tuổi) =====================
+  {
+    id: 'u14',
+    order: 8,
+    title: 'Đếm đến 20',
+    subtitle: 'Đếm và nhận biết số lượng 11 – 20',
+    emoji: '🌟',
+    color: 'sky',
+    ageBand: 'lon',
+    goal: 'Mở rộng phạm vi đếm lên 20; nhận biết số liền trước – liền sau.',
+    lessons: [
+      { id: 'u14l1', title: 'Đếm 11 – 15', emoji: '🍇', activity: 'count', skill: 'Đếm số lượng 11–15', config: { min: 11, max: 15, questions: 6, theme: 'fruit' } },
+      { id: 'u14l2', title: 'Đếm 16 – 20', emoji: '🐠', activity: 'count', skill: 'Đếm số lượng 16–20', config: { min: 16, max: 20, questions: 6, theme: 'sea' } },
+      { id: 'u14l3', title: 'Số liền sau', emoji: '👉', activity: 'sequence', skill: 'Tìm số liền sau (trong 20)', config: { min: 1, max: 20, questions: 6, variant: 'next' } },
+      { id: 'u14l4', title: 'Số liền trước', emoji: '👈', activity: 'sequence', skill: 'Tìm số liền trước (trong 20)', config: { min: 1, max: 20, questions: 6, variant: 'prev' } },
+    ],
+  },
+  {
+    id: 'u16',
+    order: 9,
+    title: 'So sánh trong 10',
+    subtitle: 'Nhiều hơn – ít hơn – bằng nhau (phạm vi 10)',
+    emoji: '🔎',
+    color: 'honey',
+    ageBand: 'lon',
+    goal: 'Mở rộng kỹ năng so sánh số lượng hai nhóm lên phạm vi 10.',
+    lessons: [
+      { id: 'u16l1', title: 'Nhiều hơn (trong 10)', emoji: '➕', activity: 'compareQuantity', skill: 'Tìm nhóm nhiều hơn (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'more' } },
+      { id: 'u16l2', title: 'Ít hơn (trong 10)', emoji: '➖', activity: 'compareQuantity', skill: 'Tìm nhóm ít hơn (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'less' } },
+      { id: 'u16l3', title: 'Bằng nhau chưa?', emoji: '🟰', activity: 'compareQuantity', skill: 'Nhận biết hai nhóm bằng nhau (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'equal' } },
+    ],
+  },
   {
     id: 'u8',
-    order: 8,
+    order: 10,
     title: 'Gộp – Tách trong 10',
     subtitle: 'Nền tảng của phép cộng và phép trừ',
     emoji: '🤝',
@@ -131,8 +176,25 @@ export const CURRICULUM: Unit[] = [
     ],
   },
   {
+    id: 'u19',
+    order: 11,
+    title: 'Gộp – Tách nâng cao',
+    subtitle: 'Các cách tách của 6 và của 10',
+    emoji: '🧩',
+    color: 'berry',
+    ageBand: 'lon',
+    goal: 'Thành thạo gộp – tách trong 10; ghi nhớ các cặp số tạo thành 6 và 10.',
+    lessons: [
+      { id: 'u19l1', title: 'Gộp trong 10', emoji: '🧺', activity: 'compose', skill: 'Gộp hai nhóm ≤10', config: { max: 10, questions: 6, theme: 'sea' } },
+      { id: 'u19l2', title: 'Các cách tách của 6', emoji: '🎲', activity: 'decompose', skill: 'Các cách tách số 6', config: { max: 6, questions: 6, theme: 'party' } },
+      { id: 'u19l3', title: 'Các cách tách của 10', emoji: '🔟', activity: 'decompose', skill: 'Các cách tách số 10', config: { max: 10, questions: 8, theme: 'fruit' } },
+    ],
+  },
+
+  // ===================== D. TIỀN TIỂU HỌC =====================
+  {
     id: 'u9',
-    order: 9,
+    order: 12,
     title: 'Phép cộng trong 10',
     subtitle: 'Thêm vào và đếm tất cả',
     emoji: '➕',
@@ -146,8 +208,23 @@ export const CURRICULUM: Unit[] = [
     ],
   },
   {
+    id: 'u17',
+    order: 13,
+    title: 'Bé cộng thành thạo',
+    subtitle: 'Luyện phép cộng nhiều chủ đề trong 10',
+    emoji: '🧮',
+    color: 'grass',
+    ageBand: 'tien-th',
+    goal: 'Luyện cộng thành thạo trong phạm vi 10 với nhiều bối cảnh khác nhau.',
+    lessons: [
+      { id: 'u17l1', title: 'Cộng trong 5', emoji: '🍪', activity: 'add', skill: 'Luyện phép cộng ≤5', config: { max: 5, questions: 8, theme: 'food' } },
+      { id: 'u17l2', title: 'Cộng trong 10', emoji: '🐠', activity: 'add', skill: 'Luyện phép cộng ≤10', config: { max: 10, questions: 8, theme: 'sea' } },
+      { id: 'u17l3', title: 'Cộng vui hội', emoji: '🎉', activity: 'add', skill: 'Luyện phép cộng ≤10 (chủ đề lễ hội)', config: { max: 10, questions: 8, theme: 'party' } },
+    ],
+  },
+  {
     id: 'u10',
-    order: 10,
+    order: 14,
     title: 'Phép trừ trong 10',
     subtitle: 'Bớt đi và đếm còn lại',
     emoji: '➖',
@@ -161,8 +238,40 @@ export const CURRICULUM: Unit[] = [
     ],
   },
   {
+    id: 'u18',
+    order: 15,
+    title: 'Bé trừ thành thạo',
+    subtitle: 'Luyện phép trừ nhiều chủ đề trong 10',
+    emoji: '✂️',
+    color: 'coral',
+    ageBand: 'tien-th',
+    goal: 'Luyện trừ thành thạo trong phạm vi 10 với nhiều bối cảnh khác nhau.',
+    lessons: [
+      { id: 'u18l1', title: 'Trừ trong 5', emoji: '🍎', activity: 'subtract', skill: 'Luyện phép trừ trong 5', config: { max: 5, questions: 8, theme: 'fruit' } },
+      { id: 'u18l2', title: 'Trừ trong 10', emoji: '🐶', activity: 'subtract', skill: 'Luyện phép trừ trong 10', config: { max: 10, questions: 8, theme: 'animal' } },
+      { id: 'u18l3', title: 'Trừ trong vườn', emoji: '🌸', activity: 'subtract', skill: 'Luyện phép trừ trong 10 (chủ đề thiên nhiên)', config: { max: 10, questions: 8, theme: 'nature' } },
+    ],
+  },
+  {
+    id: 'u15',
+    order: 16,
+    title: 'Đếm cách & Đếm lùi',
+    subtitle: 'Đếm nhảy 2, nhảy 5 và đếm ngược',
+    emoji: '🦘',
+    color: 'grape',
+    ageBand: 'tien-th',
+    goal: 'Đếm cách 2, cách 5 và đếm lùi — nền tảng cho nhân, chia sau này.',
+    lessons: [
+      { id: 'u15l1', title: 'Đếm cách 2', emoji: '2️⃣', activity: 'sequence', skill: 'Đếm cách 2 trong phạm vi 20', config: { min: 0, max: 20, questions: 6, variant: 'skip2' } },
+      { id: 'u15l2', title: 'Đếm cách 5', emoji: '5️⃣', activity: 'sequence', skill: 'Đếm cách 5 trong phạm vi 20', config: { min: 0, max: 20, questions: 6, variant: 'skip5' } },
+      { id: 'u15l3', title: 'Đếm lùi từ 10', emoji: '🚀', activity: 'sequence', skill: 'Đếm lùi trong phạm vi 10', config: { min: 0, max: 10, questions: 6, variant: 'desc' } },
+    ],
+  },
+
+  // ===================== E. BỔ TRỢ MONTESSORI =====================
+  {
     id: 'u11',
-    order: 11,
+    order: 17,
     title: 'Khối hình học 3 chiều',
     subtitle: 'Cầu, lập phương, chữ nhật, trụ, nón, kim tự tháp',
     emoji: '📦',
@@ -177,7 +286,7 @@ export const CURRICULUM: Unit[] = [
   },
   {
     id: 'u12',
-    order: 12,
+    order: 18,
     title: 'Tập tô chữ số',
     subtitle: 'Chữ số nhám Montessori: tô theo nét số 0 – 9',
     emoji: '✍️',
@@ -191,7 +300,7 @@ export const CURRICULUM: Unit[] = [
   },
   {
     id: 'u13',
-    order: 13,
+    order: 19,
     title: 'Montessori nâng cao',
     subtitle: 'Hạt vàng thập phân, bảng 100, con rắn cộng',
     emoji: '🟡',
@@ -202,97 +311,6 @@ export const CURRICULUM: Unit[] = [
       { id: 'u13l1', title: 'Hạt vàng: chục & đơn vị', emoji: '🟡', activity: 'goldenBeads', skill: 'Đọc số hai chữ số qua hạt vàng (10–99)', config: { min: 10, max: 99, questions: 8 } },
       { id: 'u13l2', title: 'Bảng 100', emoji: '💯', activity: 'hundredBoard', skill: 'Nhận biết vị trí số trên bảng 100', config: { questions: 8 } },
       { id: 'u13l3', title: 'Con rắn cộng', emoji: '🐍', activity: 'snake', skill: 'Cộng chuỗi thanh hạt (tổng ≤ 18)', config: { max: 18, questions: 8 } },
-    ],
-  },
-  {
-    id: 'u14',
-    order: 14,
-    title: 'Đếm đến 20',
-    subtitle: 'Đếm và nhận biết số lượng 11 – 20',
-    emoji: '🌟',
-    color: 'sky',
-    ageBand: 'tien-th',
-    goal: 'Mở rộng phạm vi đếm lên 20; nhận biết số liền trước – liền sau.',
-    lessons: [
-      { id: 'u14l1', title: 'Đếm 11 – 15', emoji: '🍇', activity: 'count', skill: 'Đếm số lượng 11–15', config: { min: 11, max: 15, questions: 6, theme: 'fruit' } },
-      { id: 'u14l2', title: 'Đếm 16 – 20', emoji: '🐠', activity: 'count', skill: 'Đếm số lượng 16–20', config: { min: 16, max: 20, questions: 6, theme: 'sea' } },
-      { id: 'u14l3', title: 'Số liền sau', emoji: '👉', activity: 'sequence', skill: 'Tìm số liền sau (trong 20)', config: { min: 1, max: 20, questions: 6, variant: 'next' } },
-      { id: 'u14l4', title: 'Số liền trước', emoji: '👈', activity: 'sequence', skill: 'Tìm số liền trước (trong 20)', config: { min: 1, max: 20, questions: 6, variant: 'prev' } },
-    ],
-  },
-  {
-    id: 'u15',
-    order: 15,
-    title: 'Đếm cách & Đếm lùi',
-    subtitle: 'Đếm nhảy 2, nhảy 5 và đếm ngược',
-    emoji: '🦘',
-    color: 'grape',
-    ageBand: 'tien-th',
-    goal: 'Đếm cách 2, cách 5 và đếm lùi — nền tảng cho nhân, chia sau này.',
-    lessons: [
-      { id: 'u15l1', title: 'Đếm cách 2', emoji: '2️⃣', activity: 'sequence', skill: 'Đếm cách 2 trong phạm vi 20', config: { min: 0, max: 20, questions: 6, variant: 'skip2' } },
-      { id: 'u15l2', title: 'Đếm cách 5', emoji: '5️⃣', activity: 'sequence', skill: 'Đếm cách 5 trong phạm vi 20', config: { min: 0, max: 20, questions: 6, variant: 'skip5' } },
-      { id: 'u15l3', title: 'Đếm lùi từ 10', emoji: '🚀', activity: 'sequence', skill: 'Đếm lùi trong phạm vi 10', config: { min: 0, max: 10, questions: 6, variant: 'desc' } },
-    ],
-  },
-  {
-    id: 'u16',
-    order: 16,
-    title: 'So sánh trong 10',
-    subtitle: 'Nhiều hơn – ít hơn – bằng nhau (phạm vi 10)',
-    emoji: '⚖️',
-    color: 'honey',
-    ageBand: 'lon',
-    goal: 'Mở rộng kỹ năng so sánh số lượng hai nhóm lên phạm vi 10.',
-    lessons: [
-      { id: 'u16l1', title: 'Nhiều hơn (trong 10)', emoji: '➕', activity: 'compareQuantity', skill: 'Tìm nhóm nhiều hơn (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'more' } },
-      { id: 'u16l2', title: 'Ít hơn (trong 10)', emoji: '➖', activity: 'compareQuantity', skill: 'Tìm nhóm ít hơn (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'less' } },
-      { id: 'u16l3', title: 'Bằng nhau chưa?', emoji: '🟰', activity: 'compareQuantity', skill: 'Nhận biết hai nhóm bằng nhau (phạm vi 10)', config: { min: 2, max: 10, questions: 6, variant: 'equal' } },
-    ],
-  },
-  {
-    id: 'u17',
-    order: 17,
-    title: 'Bé cộng thành thạo',
-    subtitle: 'Luyện phép cộng nhiều chủ đề trong 10',
-    emoji: '🧮',
-    color: 'grass',
-    ageBand: 'tien-th',
-    goal: 'Luyện cộng thành thạo trong phạm vi 10 với nhiều bối cảnh khác nhau.',
-    lessons: [
-      { id: 'u17l1', title: 'Cộng trong 5', emoji: '🍪', activity: 'add', skill: 'Luyện phép cộng ≤5', config: { max: 5, questions: 8, theme: 'food' } },
-      { id: 'u17l2', title: 'Cộng trong 10', emoji: '🐠', activity: 'add', skill: 'Luyện phép cộng ≤10', config: { max: 10, questions: 8, theme: 'sea' } },
-      { id: 'u17l3', title: 'Cộng vui hội', emoji: '🎉', activity: 'add', skill: 'Luyện phép cộng ≤10 (chủ đề lễ hội)', config: { max: 10, questions: 8, theme: 'party' } },
-    ],
-  },
-  {
-    id: 'u18',
-    order: 18,
-    title: 'Bé trừ thành thạo',
-    subtitle: 'Luyện phép trừ nhiều chủ đề trong 10',
-    emoji: '✂️',
-    color: 'coral',
-    ageBand: 'tien-th',
-    goal: 'Luyện trừ thành thạo trong phạm vi 10 với nhiều bối cảnh khác nhau.',
-    lessons: [
-      { id: 'u18l1', title: 'Trừ trong 5', emoji: '🍎', activity: 'subtract', skill: 'Luyện phép trừ trong 5', config: { max: 5, questions: 8, theme: 'fruit' } },
-      { id: 'u18l2', title: 'Trừ trong 10', emoji: '🐶', activity: 'subtract', skill: 'Luyện phép trừ trong 10', config: { max: 10, questions: 8, theme: 'animal' } },
-      { id: 'u18l3', title: 'Trừ trong vườn', emoji: '🌸', activity: 'subtract', skill: 'Luyện phép trừ trong 10 (chủ đề thiên nhiên)', config: { max: 10, questions: 8, theme: 'nature' } },
-    ],
-  },
-  {
-    id: 'u19',
-    order: 19,
-    title: 'Gộp – Tách nâng cao',
-    subtitle: 'Các cách tách của 6 và của 10',
-    emoji: '🧩',
-    color: 'berry',
-    ageBand: 'lon',
-    goal: 'Thành thạo gộp – tách trong 10; ghi nhớ các cặp số tạo thành 6 và 10.',
-    lessons: [
-      { id: 'u19l1', title: 'Gộp trong 10', emoji: '🧺', activity: 'compose', skill: 'Gộp hai nhóm ≤10', config: { max: 10, questions: 6, theme: 'sea' } },
-      { id: 'u19l2', title: 'Các cách tách của 6', emoji: '🎲', activity: 'decompose', skill: 'Các cách tách số 6', config: { max: 6, questions: 6, theme: 'party' } },
-      { id: 'u19l3', title: 'Các cách tách của 10', emoji: '🔟', activity: 'decompose', skill: 'Các cách tách số 10', config: { max: 10, questions: 8, theme: 'fruit' } },
     ],
   },
 ]
