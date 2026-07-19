@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { Lesson, Unit } from '../types'
 import { AGE_BANDS, INTEREST_THEMES, profileThemes } from '../types'
 import { CURRICULUM, ALL_LESSONS } from '../data/curriculum'
@@ -124,13 +125,26 @@ function UnitCard({
 }) {
   const c = COLOR[unit.color] ?? COLOR.honey
   const unitDone = unit.lessons.filter((l) => starsFor(l.id) > 0).length
+  const unitStars = unit.lessons.reduce((a, l) => a + starsFor(l.id), 0)
   const unitUnlocked = unit.lessons.some((l) => unlocked.has(l.id))
+  const fullyDone = unitDone === unit.lessons.length
+
+  // Chặng đã hoàn thành 100% => tự thu gọn (bé khỏi lỡ học lại). Chạm để mở lại.
+  const [open, setOpen] = useState(!fullyDone)
 
   return (
     <section className={`overflow-hidden rounded-3xl ${c.soft} shadow-md`}>
-      <div className={`flex items-center gap-3 bg-gradient-to-r ${c.grad} p-4 text-white`}>
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/25 text-2xl">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className={`flex w-full items-center gap-3 bg-gradient-to-r ${c.grad} p-4 text-left text-white active:brightness-95`}
+      >
+        <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/25 text-2xl">
           {unitUnlocked ? unit.emoji : '🔒'}
+          {fullyDone && (
+            <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs text-grass-dark shadow">
+              ✓
+            </span>
+          )}
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2">
@@ -140,36 +154,49 @@ function UnitCard({
             <span className="text-[11px] font-bold opacity-90">{AGE_BANDS[unit.ageBand].label}</span>
           </div>
           <h2 className="text-lg font-extrabold leading-tight">{unit.title}</h2>
-          <p className="text-xs font-bold opacity-90">{unit.subtitle}</p>
+          {fullyDone && !open ? (
+            <p className="text-xs font-bold opacity-90">
+              ⭐ {unitStars} • Đã hoàn thành — chạm để xem lại
+            </p>
+          ) : (
+            <p className="text-xs font-bold opacity-90">{unit.subtitle}</p>
+          )}
         </div>
-        <div className="text-right text-xs font-extrabold">
-          {unitDone}/{unit.lessons.length}
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-xs font-extrabold">
+            {unitDone}/{unit.lessons.length}
+          </span>
+          <span className={`text-lg leading-none transition-transform ${open ? 'rotate-180' : ''}`}>
+            ⌄
+          </span>
         </div>
-      </div>
+      </button>
 
-      <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3">
-        {unit.lessons.map((lesson) => {
-          const isUnlocked = unlocked.has(lesson.id)
-          const stars = starsFor(lesson.id)
-          return (
-            <button
-              key={lesson.id}
-              disabled={!isUnlocked}
-              onClick={() => {
-                speak(lesson.title)
-                onOpenLesson(lesson)
-              }}
-              className={`relative flex flex-col items-center gap-1 rounded-2xl border-4 bg-white p-3 text-center shadow-sm transition active:scale-95 ${
-                isUnlocked ? 'border-white ' + (stars > 0 ? c.ring + ' ring-2' : '') : 'border-black/5 opacity-60'
-              }`}
-            >
-              <span className="text-4xl">{isUnlocked ? lesson.emoji : '🔒'}</span>
-              <span className="text-xs font-extrabold leading-tight text-ink">{lesson.title}</span>
-              <Stars value={stars} size="sm" />
-            </button>
-          )
-        })}
-      </div>
+      {open && (
+        <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3">
+          {unit.lessons.map((lesson) => {
+            const isUnlocked = unlocked.has(lesson.id)
+            const stars = starsFor(lesson.id)
+            return (
+              <button
+                key={lesson.id}
+                disabled={!isUnlocked}
+                onClick={() => {
+                  speak(lesson.title)
+                  onOpenLesson(lesson)
+                }}
+                className={`relative flex flex-col items-center gap-1 rounded-2xl border-4 bg-white p-3 text-center shadow-sm transition active:scale-95 ${
+                  isUnlocked ? 'border-white ' + (stars > 0 ? c.ring + ' ring-2' : '') : 'border-black/5 opacity-60'
+                }`}
+              >
+                <span className="text-4xl">{isUnlocked ? lesson.emoji : '🔒'}</span>
+                <span className="text-xs font-extrabold leading-tight text-ink">{lesson.title}</span>
+                <Stars value={stars} size="sm" />
+              </button>
+            )
+          })}
+        </div>
+      )}
     </section>
   )
 }
