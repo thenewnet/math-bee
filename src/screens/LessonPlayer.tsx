@@ -43,19 +43,21 @@ export function LessonPlayer({
   lesson,
   onExit,
   onDone,
+  questionsOverride,
 }: {
   lesson: Lesson
   onExit: () => void
   onDone: (stars: number, correct: number, total: number) => void
+  questionsOverride?: Question[]
 }) {
   const { active } = useStore()
   const themes = active ? profileThemes(active) : undefined
   const themesKey = themes?.join(',') ?? ''
   const montessori = !!active?.montessori
   const questions = useMemo<Question[]>(
-    () => generateQuestions(lesson, themes),
+    () => questionsOverride ?? generateQuestions(lesson, themes),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [lesson, themesKey],
+    [lesson, themesKey, questionsOverride],
   )
   const [idx, setIdx] = useState(0)
   const [wrongIds, setWrongIds] = useState<Set<string>>(new Set())

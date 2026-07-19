@@ -11,6 +11,7 @@ const K_SETTINGS = 'mathbee.settings'
 interface Settings {
   sound: boolean
   voice: boolean
+  pin?: string // mã PIN bảo vệ khu quản trị (rỗng = chưa đặt)
 }
 
 interface AppState {
