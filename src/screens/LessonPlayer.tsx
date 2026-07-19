@@ -15,6 +15,22 @@ import { playCelebrate, playCorrect, playStar, playTap, playWrong, speak, unlock
 const PRAISE = ['Giỏi quá!', 'Chính xác!', 'Tuyệt vời!', 'Đúng rồi!', 'Xuất sắc!', 'Bé thông minh ghê!']
 const RETRY = ['Thử lại nhé!', 'Gần đúng rồi, cố lên!', 'Chọn lại nào!']
 
+const SHAPE_NAMES: Record<string, string> = {
+  circle: 'hình tròn',
+  square: 'hình vuông',
+  triangle: 'hình tam giác',
+  rectangle: 'hình chữ nhật',
+}
+
+// Nội dung đọc to khi bé chọn (để luyện đọc & nhớ)
+function optionSpoken(opt: { digit?: number; label?: string; shape?: string; objects?: { count: number } }): string {
+  if (opt.digit !== undefined) return String(opt.digit)
+  if (opt.label) return opt.label
+  if (opt.shape) return SHAPE_NAMES[opt.shape] ?? ''
+  if (opt.objects) return String(opt.objects.count)
+  return ''
+}
+
 function starFor(perfect: number, total: number): number {
   if (total === 0) return 1
   const ratio = perfect / total
@@ -51,6 +67,9 @@ export function LessonPlayer({
   const [confetti, setConfetti] = useState(0)
   const [feedback, setFeedback] = useState<string | null>(null)
   const advanceTimer = useRef<number | null>(null)
+  const [locked, setLocked] = useState(false) // tạm khoá 3s khi bé đoán liên tục
+  const wrongStreak = useRef(0)
+  const lockTimer = useRef<number | null>(null)
 
   const q = questions[idx]
   const total = questions.length
@@ -63,6 +82,7 @@ export function LessonPlayer({
 
   useEffect(() => () => {
     if (advanceTimer.current) window.clearTimeout(advanceTimer.current)
+    if (lockTimer.current) window.clearTimeout(lockTimer.current)
   }, [])
 
   function next() {
@@ -87,10 +107,13 @@ export function LessonPlayer({
   }
 
   function choose(optionId: string) {
-    if (solved || finished) return
+    if (solved || finished || locked) return
     unlockAudio()
     playTap()
+    const opt = q.options.find((o) => o.id === optionId)
+    const said = opt ? optionSpoken(opt) : ''
     if (optionId === q.answer) {
+      wrongStreak.current = 0
       if (!mistakeRef.current) {
         perfectRef.current += 1
         setPerfect((p) => p + 1)
@@ -99,16 +122,30 @@ export function LessonPlayer({
       playCorrect()
       const praise = PRAISE[Math.floor(Math.random() * PRAISE.length)]
       setFeedback(praise)
-      window.setTimeout(() => speak(praise), 120)
+      // đọc kết quả bé chọn rồi khen (luyện đọc & nhớ)
+      speak(said ? `${said}. ${praise}` : praise)
       if (!montessori) setConfetti((c) => c + 1)
-      advanceTimer.current = window.setTimeout(next, montessori ? 1000 : 1400)
+      advanceTimer.current = window.setTimeout(next, montessori ? 1000 : 1500)
     } else {
       mistakeRef.current = true
+      wrongStreak.current += 1
       setWrongIds((prev) => new Set(prev).add(optionId))
       playWrong()
       const r = RETRY[Math.floor(Math.random() * RETRY.length)]
       setFeedback(r)
-      window.setTimeout(() => speak(r), 120)
+      // đoán liên tục 3 lần sai => tạm khoá 3 giây, nhắc bé suy nghĩ
+      if (wrongStreak.current >= 3) {
+        setLocked(true)
+        const warn = 'Bình tĩnh suy nghĩ nhé! Đừng đoán, hãy đếm thật kỹ rồi chọn.'
+        setFeedback(null)
+        speak(warn)
+        lockTimer.current = window.setTimeout(() => {
+          setLocked(false)
+          wrongStreak.current = 0
+        }, 3000)
+      } else {
+        speak(said ? `${said}. ${r}` : r)
+      }
     }
   }
 
@@ -145,6 +182,21 @@ export function LessonPlayer({
   return (
     <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col p-4 sm:p-6">
       <Confetti trigger={confetti} />
+
+      {/* Lớp phủ tạm khoá 3s khi bé đoán liên tục */}
+      {locked && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 p-6 backdrop-blur-sm">
+          <div className="anim-pop flex max-w-xs flex-col items-center gap-3 rounded-3xl bg-white p-6 text-center shadow-2xl">
+            <span className="text-6xl anim-bounce">🤔</span>
+            <h3 className="text-xl font-extrabold text-coral">Bình tĩnh suy nghĩ nhé!</h3>
+            <p className="text-sm font-bold text-ink/70">Đừng đoán — hãy đếm/nhìn thật kỹ rồi chọn.</p>
+            <div className="mt-1 h-2.5 w-full overflow-hidden rounded-full bg-black/10">
+              <div className="anim-countdown h-full rounded-full bg-honey" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* header */}
       <div className="mb-3 flex items-center gap-3">
         <button
@@ -230,7 +282,7 @@ export function LessonPlayer({
                   option={opt}
                   state={state}
                   montessori={montessori}
-                  disabled={solved || wrongIds.has(opt.id)}
+                  disabled={solved || locked || wrongIds.has(opt.id)}
                   onClick={() => {
                     if (isAnswer && !solved && !montessori) playStar()
                     choose(opt.id)
