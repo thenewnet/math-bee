@@ -28,12 +28,14 @@ export function Home({
   onOpenSettings: () => void
   onOpenRewards: () => void
 }) {
-  const { active, stats, starsFor, totalStars } = useStore()
+  const { active, stats, starsFor, totalStars, settings } = useStore()
 
   // Mở khoá tuyến tính: bài đầu luôn mở; bài sau mở khi bài trước đã hoàn thành.
+  // (Quản trị) Bật "Mở khoá tất cả để kiểm tra" trong Khu quản trị → mở hết.
   const unlocked = new Set<string>()
   for (let i = 0; i < ALL_LESSONS.length; i++) {
-    if (i === 0 || starsFor(ALL_LESSONS[i - 1].id) > 0) unlocked.add(ALL_LESSONS[i].id)
+    if (settings.unlockAll || i === 0 || starsFor(ALL_LESSONS[i - 1].id) > 0)
+      unlocked.add(ALL_LESSONS[i].id)
   }
   const doneCount = ALL_LESSONS.filter((l) => starsFor(l.id) > 0).length
 

@@ -101,6 +101,20 @@ export function Settings({
         />
       </section>
 
+      {/* Chế độ kiểm tra (chỉ hiện trong khu quản trị — bé không vào được) */}
+      <section className="mb-5 rounded-3xl bg-white p-4 shadow">
+        <h2 className="mb-2 text-base font-extrabold text-ink">🧪 Chế độ kiểm tra</h2>
+        <p className="mb-3 text-xs font-bold text-ink/50">
+          Mở khoá tất cả bài học để xem trước/kiểm tra. Chỉ dành cho người lớn — nên tắt lại
+          khi cho bé học để giữ lộ trình mở khoá tuần tự.
+        </p>
+        <Toggle
+          label="Mở khoá tất cả bài (để kiểm tra)"
+          value={!!settings.unlockAll}
+          onChange={(v) => setSettings({ unlockAll: v })}
+        />
+      </section>
+
       {/* Hồ sơ trẻ */}
       <section className="mb-5 rounded-3xl bg-white p-4 shadow">
         <div className="mb-3 flex items-center justify-between">

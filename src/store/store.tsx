@@ -12,6 +12,7 @@ interface Settings {
   sound: boolean
   voice: boolean
   pin?: string // mã PIN bảo vệ khu quản trị (rỗng = chưa đặt)
+  unlockAll?: boolean // (quản trị) mở khoá TẤT CẢ bài để kiểm tra — chỉ vào được qua khu quản trị
 }
 
 interface AppState {
