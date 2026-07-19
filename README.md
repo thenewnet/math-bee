@@ -11,15 +11,16 @@ trên điện thoại / máy tính bảng (PWA).
 ## ✨ Tính năng
 
 - **Hồ sơ nhiều bé**: mỗi bé có tên, nhân vật và độ tuổi riêng; tiến độ lưu tách biệt.
-- **Lộ trình 10 chặng** tăng dần độ khó, mở khóa tuần tự (bài trước xong mới mở bài sau).
-- **13 dạng bài tương tác**: đếm, nhận biết chữ số, so sánh nhiều/ít, số thứ tự,
-  quy luật, hình học, phương hướng, so sánh kích thước, gộp–tách, cộng, trừ trong phạm vi 10…
+- **Lộ trình 19 chặng** tăng dần độ khó, mở khóa tuần tự (bài trước xong mới mở bài sau).
+- **21 dạng bài tương tác**: đếm (tới 20), nhận biết chữ số, so sánh nhiều/ít, số thứ tự,
+  số liền trước–liền sau, đếm cách 2/5, đếm lùi, quy luật, hình học 2D/3D, phương hướng,
+  so sánh kích thước, gộp–tách, cộng, trừ trong phạm vi 10 và học cụ Montessori…
 - **Giọng đọc tiếng Việt** (Text-to-Speech) đọc câu hỏi cho bé chưa biết chữ.
 - **Phản hồi tức thì**: hiệu ứng âm thanh, pháo giấy, khen ngợi, cho làm lại khi sai (không phạt).
 - **Thưởng sao & huy hiệu**: động lực học tập, xem thành tích riêng cho từng bé.
 - **Hoạt động offline** (PWA), lưu dữ liệu ngay trên thiết bị, không cần đăng nhập.
 
-## 🧭 Lộ trình học (10 chặng)
+## 🧭 Lộ trình học (19 chặng)
 
 | Chặng | Nội dung | Độ tuổi |
 |------|----------|---------|
@@ -33,6 +34,17 @@ trên điện thoại / máy tính bảng (PWA).
 | 8 | Gộp – Tách trong 10 | 5–6 |
 | 9 | Phép cộng trong 10 | Tiền tiểu học |
 | 10 | Phép trừ trong 10 | Tiền tiểu học |
+| 11 | Khối hình học 3 chiều | Tiền tiểu học |
+| 12 | Tập tô chữ số (Montessori) | 5–6 |
+| 13 | Montessori nâng cao (hạt vàng, bảng 100) | Tiền tiểu học |
+| 14 | Đếm đến 20 & số liền trước–sau | Tiền tiểu học |
+| 15 | Đếm cách 2/5 & đếm lùi | Tiền tiểu học |
+| 16 | So sánh trong 10 | 5–6 |
+| 17 | Bé cộng thành thạo | Tiền tiểu học |
+| 18 | Bé trừ thành thạo | Tiền tiểu học |
+| 19 | Gộp – Tách nâng cao (tách của 6, của 10) | 5–6 |
+
+> Mỗi chặng tự động có thêm bài **"Ôn tập chặng"** tổng hợp các dạng bài trong chặng.
 
 ## 🛠️ Công nghệ
 

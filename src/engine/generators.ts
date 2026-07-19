@@ -159,21 +159,53 @@ function genCountTo10(l: Lesson, themes?: InterestTheme[]): Question[] {
 }
 
 function genSequence(l: Lesson): Question[] {
-  const { min = 1, max = 10, questions = 6 } = l.config
+  const { min = 1, max = 10, questions = 6, variant = 'asc' } = l.config
   const out: Question[] = []
+
+  // "Số liền trước / liền sau": dãy ngắn chỉ 2 ô, ẩn ô cần tìm.
+  if (variant === 'next' || variant === 'prev') {
+    for (let i = 0; i < questions; i++) {
+      const isNext = variant === 'next'
+      const n = isNext ? rint(min, max - 1) : rint(min + 1, max)
+      const answerVal = isNext ? n + 1 : n - 1
+      const seq: (number | null)[] = isNext ? [n, null] : [null, n]
+      out.push({
+        id: nid(),
+        prompt: isNext ? `Số liền SAU số ${n} là số nào?` : `Số liền TRƯỚC số ${n} là số nào?`,
+        render: { kind: 'sequence', sequence: seq },
+        options: digitOptions(answerVal, Math.max(0, min - 1), max + 1),
+        answer: `d${answerVal}`,
+      })
+    }
+    return out
+  }
+
+  // Dãy đếm: bước nhảy (đếm cách) và chiều (đếm lùi) theo variant.
+  const step = variant === 'skip2' ? 2 : variant === 'skip5' ? 5 : 1
+  const desc = variant === 'desc'
+  const len = step >= 5 ? 4 : 5
+  const span = step * (len - 1)
   for (let i = 0; i < questions; i++) {
-    const len = 5
-    const start = rint(min, Math.max(min, max - len + 1))
+    // chọn số bắt đầu sao cho cả dãy nằm trong [min, max]
+    const start = desc
+      ? rint(Math.min(max, min + span), max)
+      : rint(min, Math.max(min, max - span))
     const seq: (number | null)[] = []
-    for (let k = 0; k < len; k++) seq.push(start + k)
+    for (let k = 0; k < len; k++) seq.push(desc ? start - step * k : start + step * k)
     const missIndex = rint(1, len - 2) // không ẩn số đầu/cuối cho dễ suy luận
     const answerVal = seq[missIndex] as number
     seq[missIndex] = null
+    const prompt =
+      step > 1
+        ? `Đếm cách ${step}: số nào còn thiếu?`
+        : desc
+          ? 'Đếm lùi: số nào còn thiếu?'
+          : 'Số nào còn thiếu trong dãy?'
     out.push({
       id: nid(),
-      prompt: 'Số nào còn thiếu trong dãy?',
+      prompt,
       render: { kind: 'sequence', sequence: seq },
-      options: digitOptions(answerVal, Math.max(1, min), max),
+      options: digitOptions(answerVal, Math.max(0, min), max),
       answer: `d${answerVal}`,
     })
   }
