@@ -1,6 +1,7 @@
 import type { InterestTheme, Lesson, Option, Question } from '../types'
 import { pickFrom, resolveIcons } from './themes'
 import { CURRICULUM } from '../data/curriculum'
+import { GEO_SOLIDS } from '../components/Solid3D'
 
 // ---------- Tiện ích ----------
 function rint(min: number, max: number): number {
@@ -40,13 +41,6 @@ export const SHAPES = [
   { id: 'square', name: 'hình vuông' },
   { id: 'triangle', name: 'hình tam giác' },
   { id: 'rectangle', name: 'hình chữ nhật' },
-]
-
-export const SOLIDS = [
-  { id: 'cau', name: 'khối cầu', objects: ['⚽', '🏀', '🍊', '🔮', '🎾', '🌐'] },
-  { id: 'lapphuong', name: 'khối lập phương', objects: ['🎲', '🧊', '🧀', '🎁'] },
-  { id: 'tru', name: 'khối trụ', objects: ['🥫', '🥤', '🧴', '🔋', '🕯️', '🥁'] },
-  { id: 'chunhat', name: 'khối chữ nhật', objects: ['📦', '📚', '🧱', '📱', '🍫', '🧼'] },
 ]
 
 const ORDINAL_WORDS = ['thứ nhất', 'thứ hai', 'thứ ba', 'thứ tư', 'thứ năm', 'thứ sáu']
@@ -437,24 +431,37 @@ function genSpatial(l: Lesson): Question[] {
 
 function genSolid(l: Lesson): Question[] {
   const { questions = 6, variant = 'all' } = l.config
-  let pool = SOLIDS
-  if (variant === 'basic2') pool = [SOLIDS[0], SOLIDS[1]]
-  else if (variant === 'basic4') pool = SOLIDS
+  let pool = GEO_SOLIDS
+  if (variant === 'basic2') pool = [GEO_SOLIDS[0], GEO_SOLIDS[1]] // cầu, lập phương
+  else if (variant === 'basic4') pool = GEO_SOLIDS.slice(0, 4)
   const out: Question[] = []
   for (let i = 0; i < questions; i++) {
     const target = pool[i % pool.length]
-    const emoji = target.objects[rint(0, target.objects.length - 1)]
-    const others = shuffle(SOLIDS.filter((s) => s.id !== target.id)).slice(0, 3)
+    const others = shuffle(GEO_SOLIDS.filter((s) => s.id !== target.id)).slice(0, 3)
     const options: Option[] = shuffle([target, ...others]).map((s) => ({ id: s.id, label: s.name }))
     out.push({
       id: nid(),
-      prompt: 'Đồ vật này có dạng khối gì?',
-      render: { kind: 'solid', emoji, name: target.name },
+      prompt: 'Đây là khối gì?',
+      render: { kind: 'solid', solidId: target.id, name: target.name },
       options,
       answer: target.id,
     })
   }
   return out
+}
+
+function genTrace(l: Lesson): Question[] {
+  const { min = 0, max = 9, questions } = l.config
+  const digits: number[] = []
+  for (let d = min; d <= max; d++) digits.push(d)
+  const chosen = questions ? digits.slice(0, questions) : digits
+  return chosen.map((d) => ({
+    id: nid(),
+    prompt: `Tô theo số ${d}`,
+    render: { kind: 'trace', value: d },
+    options: [],
+    answer: 'done',
+  }))
 }
 
 // Ôn tập cuối chặng: trộn các câu hỏi từ những bài trong cùng chặng.
@@ -506,6 +513,8 @@ export function generateQuestions(lesson: Lesson, interest?: InterestTheme): Que
       return genSpatial(lesson)
     case 'solid':
       return genSolid(lesson)
+    case 'trace':
+      return genTrace(lesson)
     case 'review':
       return genReview(lesson, interest)
     default:

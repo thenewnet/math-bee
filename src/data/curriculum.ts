@@ -162,22 +162,37 @@ export const CURRICULUM: Unit[] = [
   {
     id: 'u11',
     order: 11,
-    title: 'Khối 3 chiều',
-    subtitle: 'Khối cầu, khối trụ, khối lập phương, khối chữ nhật',
+    title: 'Khối hình học 3 chiều',
+    subtitle: 'Cầu, lập phương, chữ nhật, trụ, nón, kim tự tháp',
     emoji: '📦',
     color: 'sky',
     ageBand: 'tien-th',
-    goal: 'Nhận biết, gọi tên các khối và liên hệ với đồ vật quen thuộc.',
+    goal: 'Nhận biết, gọi tên bộ khối hình học (Montessori) và liên hệ đồ vật thật.',
     lessons: [
-      { id: 'u11l1', title: 'Khối cầu & lập phương', emoji: '⚽', activity: 'solid', skill: 'Nhận biết khối cầu, khối lập phương', config: { questions: 6, variant: 'basic2' } },
-      { id: 'u11l2', title: 'Khối trụ & chữ nhật', emoji: '🥫', activity: 'solid', skill: 'Nhận biết khối trụ, khối chữ nhật', config: { questions: 6, variant: 'basic4' } },
-      { id: 'u11l3', title: 'Đồ vật quanh bé', emoji: '🔍', activity: 'solid', skill: 'Liên hệ khối với đồ vật thật', config: { questions: 8, variant: 'all' } },
+      { id: 'u11l1', title: 'Khối cầu & lập phương', emoji: '🔵', activity: 'solid', skill: 'Nhận biết khối cầu, khối lập phương', config: { questions: 6, variant: 'basic2' } },
+      { id: 'u11l2', title: 'Trụ & hộp chữ nhật', emoji: '🟦', activity: 'solid', skill: 'Nhận biết khối trụ, khối chữ nhật', config: { questions: 6, variant: 'basic4' } },
+      { id: 'u11l3', title: 'Nón & kim tự tháp', emoji: '🔺', activity: 'solid', skill: 'Nhận biết đủ 6 khối hình học', config: { questions: 8, variant: 'all' } },
+    ],
+  },
+  {
+    id: 'u12',
+    order: 12,
+    title: 'Tập tô chữ số',
+    subtitle: 'Chữ số nhám Montessori: tô theo nét số 0 – 9',
+    emoji: '✍️',
+    color: 'berry',
+    ageBand: 'lon',
+    goal: 'Ghi nhớ hình dạng và thứ tự nét viết các chữ số bằng cách tô theo (Montessori).',
+    lessons: [
+      { id: 'u12l1', title: 'Tô số 0 – 4', emoji: '✏️', activity: 'trace', skill: 'Tô theo nét các số 0–4', config: { min: 0, max: 4 } },
+      { id: 'u12l2', title: 'Tô số 5 – 9', emoji: '🖍️', activity: 'trace', skill: 'Tô theo nét các số 5–9', config: { min: 5, max: 9 } },
     ],
   },
 ]
 
-// Thêm bài "Ôn tập cuối chặng" vào cuối mỗi chặng (tổng hợp các dạng bài đã học).
+// Thêm bài "Ôn tập cuối chặng" vào cuối mỗi chặng (trừ chặng tập tô).
 for (const u of CURRICULUM) {
+  if (u.lessons.every((l) => l.activity === 'trace')) continue
   u.lessons.push({
     id: `${u.id}lR`,
     title: 'Ôn tập chặng',

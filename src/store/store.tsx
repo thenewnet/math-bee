@@ -24,6 +24,7 @@ interface AppState {
     avatar: string,
     ageBand: AgeBand,
     theme?: InterestTheme,
+    montessori?: boolean,
   ) => ChildProfile
   updateProfile: (id: string, patch: Partial<ChildProfile>) => void
   removeProfile: (id: string) => void
@@ -83,13 +84,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   )
 
   const addProfile = useCallback(
-    (name: string, avatar: string, ageBand: AgeBand, theme: InterestTheme = 'classic') => {
+    (
+      name: string,
+      avatar: string,
+      ageBand: AgeBand,
+      theme: InterestTheme = 'classic',
+      montessori = false,
+    ) => {
       const p: ChildProfile = {
         id: genId(),
         name: name.trim() || 'Bé',
         avatar,
         ageBand,
         theme,
+        montessori,
         createdAt: Date.now(),
       }
       setProfiles((prev) => [...prev, p])

@@ -40,6 +40,7 @@ export type ActivityType =
   | 'spatial' // định hướng không gian
   | 'sequence' // đếm tiếp / số còn thiếu trong dãy
   | 'solid' // nhận biết khối 3 chiều (cầu, trụ, lập phương, chữ nhật)
+  | 'trace' // tập tô chữ số (chữ số nhám Montessori)
   | 'review' // ôn tập cuối chặng (tổng hợp các dạng bài trong chặng)
 
 export interface LessonConfig {
@@ -77,6 +78,7 @@ export interface ChildProfile {
   avatar: string // emoji
   ageBand: AgeBand
   theme?: InterestTheme // chủ đề yêu thích (mặc định 'classic')
+  montessori?: boolean // bật chế độ học cụ Montessori
   createdAt: number
 }
 
@@ -113,7 +115,8 @@ export type QuestionRender =
   | { kind: 'sizeRow'; items: { icon: string; scale: number }[]; ask: string }
   | { kind: 'spatial'; scene: string; ask: string }
   | { kind: 'shape'; target: string }
-  | { kind: 'solid'; emoji: string; name: string }
+  | { kind: 'solid'; solidId: string; name: string }
+  | { kind: 'trace'; value: number }
   | { kind: 'digit'; value: number }
   | { kind: 'sequence'; sequence: (number | null)[] }
 

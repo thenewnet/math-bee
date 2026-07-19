@@ -155,6 +155,23 @@ export function Settings({
                 ))}
               </div>
 
+              {/* chế độ Montessori */}
+              <button
+                onClick={() => updateProfile(p.id, { montessori: !p.montessori })}
+                className="mt-3 flex w-full items-center justify-between rounded-lg bg-black/5 px-3 py-2"
+              >
+                <span className="flex items-center gap-1.5 text-xs font-extrabold text-ink">
+                  🧩 Chế độ Montessori
+                </span>
+                <span
+                  className={`relative h-6 w-11 rounded-full transition ${p.montessori ? 'bg-grass' : 'bg-black/20'}`}
+                >
+                  <span
+                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${p.montessori ? 'left-[22px]' : 'left-0.5'}`}
+                  />
+                </span>
+              </button>
+
               {/* xoá */}
               <div className="mt-3 text-right">
                 {confirmDel === p.id ? (
