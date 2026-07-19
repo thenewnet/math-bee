@@ -13,19 +13,12 @@ export const THEMES: Record<string, string[]> = {
 
 // Bộ icon theo chủ đề yêu thích của bé (robot / siêu nhân / quái vật).
 // Dùng biểu tượng nguyên bản, KHÔNG dùng nhân vật có bản quyền.
-// Tất cả là nhân vật GỐC (SVG) — xem src/components/Creatures.tsx (KHÔNG dùng ảnh bản quyền).
+// Emoji ảnh Twemoji cho từng chủ đề (đẹp, đồng nhất mọi thiết bị).
 export const INTEREST_ICONS: Record<Exclude<InterestTheme, 'classic'>, string[]> = {
-  robot: ['robot:box', 'robot:dome', 'robot:tread', 'robot:rocket', 'robot:claw'],
-  hero: ['hero:cape', 'hero:mask', 'hero:bolt', 'hero:star', 'hero:shield'],
-  monster: [
-    'creature:slime',
-    'creature:spike',
-    'creature:ears',
-    'creature:horn',
-    'creature:star',
-    'creature:bot',
-  ],
-  car: ['car:sedan', 'car:truck', 'car:bus', 'car:race', 'car:van'],
+  robot: ['🤖', '🦾', '🚀', '🛸', '🛰️', '🔋'],
+  hero: ['🦸', '🦹', '🦸‍♂️', '🦸‍♀️', '🦇', '⚡'],
+  monster: ['👾', '🐲', '🐉', '🦖', '🦕', '👹'],
+  car: ['🚗', '🚙', '🚕', '🏎️', '🚌', '🚓'],
 }
 
 // Avatar gợi ý theo chủ đề (đứng đầu danh sách khi bé chọn chủ đề đó).

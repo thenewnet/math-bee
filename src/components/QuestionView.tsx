@@ -3,6 +3,7 @@ import { ObjectGroup } from './ObjectGroup'
 import { Shape } from './Shape'
 import { Solid3D } from './Solid3D'
 import { Glyph } from './Creatures'
+import { Emoji } from './Emoji'
 import { BeadBar, NumberRod, GoldenBeads, HundredBoard } from './Montessori'
 
 const SHAPE_ASK: Record<string, string> = {
@@ -135,9 +136,7 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
                   ?
                 </span>
               ) : (
-                <span key={i} className="text-4xl">
-                  {s}
-                </span>
+                <Emoji key={i} char={s} size={52} />
               ),
             )}
           </div>
@@ -149,9 +148,7 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
         <Panel>
           <div className="flex items-end justify-center gap-6">
             {r.items.map((it, i) => (
-              <span key={i} className="leading-none" style={{ fontSize: `${it.scale * 3.5 + 1}rem` }}>
-                {it.icon}
-              </span>
+              <Emoji key={i} char={it.icon} size={Math.round((it.scale * 3.5 + 1) * 18)} />
             ))}
           </div>
         </Panel>
@@ -238,32 +235,32 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
       if (r.ask === 'time') {
         return (
           <Panel>
-            <span className="text-8xl anim-pop">{emoji}</span>
+            <span className="anim-pop"><Emoji char={emoji} size={120} /></span>
           </Panel>
         )
       }
       if (r.ask === 'updown') {
         return (
-          <div className="relative flex h-[180px] w-full flex-col rounded-3xl bg-gradient-to-b from-sky/25 to-grass/25 p-3 shadow-inner">
+          <div className="relative flex h-[200px] w-full flex-col rounded-3xl bg-gradient-to-b from-sky/25 to-grass/25 p-3 shadow-inner">
             <div className="flex h-1/2 items-center justify-center">
-              {pos === 'top' && <span className="text-6xl anim-pop">{emoji}</span>}
+              {pos === 'top' && <span className="anim-pop"><Emoji char={emoji} size={80} /></span>}
             </div>
             <div className="h-1 w-full rounded-full bg-ink/20" />
             <div className="flex h-1/2 items-center justify-center">
-              {pos === 'bottom' && <span className="text-6xl anim-pop">{emoji}</span>}
+              {pos === 'bottom' && <span className="anim-pop"><Emoji char={emoji} size={80} /></span>}
             </div>
           </div>
         )
       }
       // leftright
       return (
-        <div className="relative flex h-[180px] w-full items-center rounded-3xl bg-gradient-to-r from-sky/25 to-berry/25 p-3 shadow-inner">
+        <div className="relative flex h-[200px] w-full items-center rounded-3xl bg-gradient-to-r from-sky/25 to-berry/25 p-3 shadow-inner">
           <div className="flex w-1/2 items-center justify-center">
-            {pos === 'left' && <span className="text-6xl anim-pop">{emoji}</span>}
+            {pos === 'left' && <span className="anim-pop"><Emoji char={emoji} size={80} /></span>}
           </div>
           <div className="h-full w-1 rounded-full bg-ink/20" />
           <div className="flex w-1/2 items-center justify-center">
-            {pos === 'right' && <span className="text-6xl anim-pop">{emoji}</span>}
+            {pos === 'right' && <span className="anim-pop"><Emoji char={emoji} size={80} /></span>}
           </div>
         </div>
       )
