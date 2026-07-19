@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Lesson, Question } from '../types'
+import { profileThemes } from '../types'
 import { generateQuestions } from '../engine/generators'
 import { QuestionView } from '../components/QuestionView'
 import { OptionButton } from '../components/OptionButton'
 import { TraceNumber } from '../components/TraceNumber'
+import { PinkTower } from '../components/PinkTower'
 import { Stars } from '../components/Stars'
 import { Mascot } from '../components/Mascot'
 import { Confetti } from '../components/Confetti'
@@ -31,11 +33,13 @@ export function LessonPlayer({
   onDone: (stars: number, correct: number, total: number) => void
 }) {
   const { active } = useStore()
-  const interest = active?.theme
+  const themes = active ? profileThemes(active) : undefined
+  const themesKey = themes?.join(',') ?? ''
   const montessori = !!active?.montessori
   const questions = useMemo<Question[]>(
-    () => generateQuestions(lesson, interest),
-    [lesson, interest],
+    () => generateQuestions(lesson, themes),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [lesson, themesKey],
   )
   const [idx, setIdx] = useState(0)
   const [wrongIds, setWrongIds] = useState<Set<string>>(new Set())
@@ -170,16 +174,26 @@ export function LessonPlayer({
         <span className="text-xl">🔊</span>
       </button>
 
-      {q.render.kind === 'trace' ? (
-        /* Bài tập tô chữ số (Montessori) — không có lựa chọn */
+      {q.render.kind === 'trace' || q.render.kind === 'seriation' ? (
+        /* Bài tương tác trực tiếp (Montessori) — không có lựa chọn */
         <div className="mt-2 flex flex-col items-center">
-          <TraceNumber
-            key={q.id}
-            value={q.render.value}
-            onComplete={() => {
-              if (!solved) choose(q.answer)
-            }}
-          />
+          {q.render.kind === 'trace' ? (
+            <TraceNumber
+              key={q.id}
+              value={q.render.value}
+              onComplete={() => {
+                if (!solved) choose(q.answer)
+              }}
+            />
+          ) : (
+            <PinkTower
+              key={q.id}
+              sizes={q.render.sizes}
+              onComplete={() => {
+                if (!solved) choose(q.answer)
+              }}
+            />
+          )}
           <div className="mt-3 h-7 text-center text-lg font-extrabold">
             {feedback && <span className="text-grass-dark">{feedback}</span>}
           </div>

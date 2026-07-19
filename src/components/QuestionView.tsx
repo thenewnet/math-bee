@@ -3,7 +3,7 @@ import { ObjectGroup } from './ObjectGroup'
 import { Shape } from './Shape'
 import { Solid3D } from './Solid3D'
 import { Glyph } from './Creatures'
-import { BeadBar, NumberRod } from './Montessori'
+import { BeadBar, NumberRod, GoldenBeads, HundredBoard } from './Montessori'
 
 const SHAPE_ASK: Record<string, string> = {
   circle: 'hình tròn',
@@ -171,6 +171,31 @@ export function QuestionView({ q, montessori = false }: { q: Question; montessor
       return (
         <Panel>
           <Solid3D kind={r.solidId} size={150} />
+        </Panel>
+      )
+
+    case 'goldenBeads':
+      return (
+        <Panel>
+          <GoldenBeads value={r.value} />
+        </Panel>
+      )
+
+    case 'hundredBoard':
+      return (
+        <div className="flex w-full justify-center overflow-x-auto rounded-3xl bg-white/70 p-3 shadow-inner">
+          <HundredBoard missing={r.missing} />
+        </div>
+      )
+
+    case 'snake':
+      return (
+        <Panel>
+          <div className="flex flex-wrap items-center justify-center gap-1">
+            {r.bars.map((b, i) => (
+              <BeadBar key={i} n={b} bead={22} />
+            ))}
+          </div>
         </Panel>
       )
 
